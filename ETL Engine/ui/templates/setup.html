@@ -118,12 +118,27 @@ document.getElementById('setup-restart').addEventListener('click', async () => {
   const status = document.getElementById('setup-status');
   try {
     const data = await postSetup('/api/setup/restart');
-    status.className = 'setup-status ok';
+    status.className = 'setup-status';
     status.textContent = data.message || 'Python server is restarting…';
-    setTimeout(loadSetup, 4000);
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      try {
+        const response = await fetch('/api/setup', { cache: 'no-store' });
+        if (response.ok) {
+          await loadSetup();
+          return;
+        }
+      } catch (error) {
+        status.textContent = 'Python server is restarting…';
+      }
+    }
+    status.className = 'setup-status err';
+    status.textContent = 'Restart was requested, but the server did not come back. Run Open Setup.bat.';
   } catch (error) {
     status.className = 'setup-status err';
-    status.textContent = error.message;
+    status.textContent = error.message === 'Failed to fetch'
+      ? 'The server is stopped, so this page cannot restart it. Run Open Setup.bat.'
+      : error.message;
   }
 });
 

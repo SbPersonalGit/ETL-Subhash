@@ -12,8 +12,10 @@ if str(ENGINE_ROOT) not in sys.path:
     sys.path.insert(0, str(ENGINE_ROOT))
 
 from core.workspace_layout import (  # noqa: E402
+    ENGINE_DATA_DIR,
     ETL_PORT,
     ensure_workspace_folders,
+    server_is_running,
     start_python_server,
     stop_python_server,
 )
@@ -25,11 +27,30 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=ETL_PORT)
     args = parser.parse_args()
     ensure_workspace_folders()
+    log_path = ENGINE_DATA_DIR / "logs" / "flask_server.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def log(message: str) -> None:
+        with log_path.open("a", encoding="utf-8") as handle:
+            handle.write(message + "\n")
+
     time.sleep(max(0.0, args.delay))
+    log(f"restart: stopping port {args.port}")
     stop_python_server(args.port)
-    time.sleep(1.0)
+    deadline = time.time() + 20
+    while server_is_running(args.port) and time.time() < deadline:
+        time.sleep(0.4)
+    if server_is_running(args.port):
+        log("restart: port still in use; start skipped")
+        return 1
+    log("restart: starting")
     start_python_server(args.port)
-    return 0
+    deadline = time.time() + 40
+    while not server_is_running(args.port) and time.time() < deadline:
+        time.sleep(0.5)
+    running = server_is_running(args.port)
+    log(f"restart: running={running}")
+    return 0 if running else 1
 
 
 if __name__ == "__main__":

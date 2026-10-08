@@ -12,6 +12,7 @@ Layout (sibling of ETL Engine):
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
@@ -300,6 +301,78 @@ def server_is_running(port: int = ETL_PORT) -> bool:
     return bool(listening_pids(port))
 
 
+def _detached_popen(argv: list[str], *, env: dict, cwd: str, stdout=None) -> subprocess.Popen:
+    """Start a process without inheriting the Flask listening socket."""
+    kwargs = {
+        "args": argv,
+        "cwd": cwd,
+        "env": env,
+        "stdin": subprocess.DEVNULL,
+        "stdout": stdout if stdout is not None else subprocess.DEVNULL,
+        "stderr": subprocess.STDOUT if stdout is not None else subprocess.DEVNULL,
+        "close_fds": True,
+    }
+    if os.name != "nt":
+        return subprocess.Popen(**kwargs, start_new_session=True)
+    flags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+    try:
+        return subprocess.Popen(**kwargs, creationflags=flags | 0x01000000)
+    except OSError:
+        return subprocess.Popen(**kwargs, creationflags=flags)
+
+
+def _reloader_parent_pid(pid: int) -> int | None:
+    """Return the parent pid when it is the Werkzeug reloader python process."""
+    if os.name != "nt" or pid <= 0:
+        return None
+    import ctypes
+    from ctypes import wintypes
+
+    class PROCESSENTRY32W(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", wintypes.DWORD),
+            ("cntUsage", wintypes.DWORD),
+            ("th32ProcessID", wintypes.DWORD),
+            ("th32DefaultHeapID", ctypes.c_size_t),
+            ("th32ModuleID", wintypes.DWORD),
+            ("cntThreads", wintypes.DWORD),
+            ("th32ParentProcessID", wintypes.DWORD),
+            ("pcPriClassBase", wintypes.LONG),
+            ("dwFlags", wintypes.DWORD),
+            ("szExeFile", wintypes.WCHAR * 260),
+        ]
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    kernel32.Process32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+    kernel32.Process32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+    kernel32.Process32FirstW.restype = wintypes.BOOL
+    kernel32.Process32NextW.restype = wintypes.BOOL
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    snapshot = kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
+    if not snapshot or snapshot == wintypes.HANDLE(-1).value:
+        return None
+    exe_by_pid: dict[int, str] = {}
+    parent_by_pid: dict[int, int] = {}
+    try:
+        entry = PROCESSENTRY32W()
+        entry.dwSize = ctypes.sizeof(PROCESSENTRY32W)
+        ok = kernel32.Process32FirstW(snapshot, ctypes.byref(entry))
+        while ok:
+            exe_by_pid[int(entry.th32ProcessID)] = entry.szExeFile
+            parent_by_pid[int(entry.th32ProcessID)] = int(entry.th32ParentProcessID)
+            ok = kernel32.Process32NextW(snapshot, ctypes.byref(entry))
+    finally:
+        kernel32.CloseHandle(snapshot)
+    parent = parent_by_pid.get(pid)
+    if not parent:
+        return None
+    exe = (exe_by_pid.get(parent) or "").lower()
+    if exe.startswith("python"):
+        return parent
+    return None
+
+
 def start_python_server(port: int = ETL_PORT) -> dict:
     """Start ui/app.py in the engine venv when nothing is listening on the port."""
     if server_is_running(port):
@@ -311,26 +384,26 @@ def start_python_server(port: int = ETL_PORT) -> dict:
     env = os.environ.copy()
     env["PYTHONPATH"] = str(ENGINE_ROOT)
     env["ETL_PORT"] = str(port)
-    stdout = open(log_path, "a", encoding="utf-8")
-    creationflags = 0
-    if os.name == "nt":
-        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
-    subprocess.Popen(
-        [str(python), str(app_path)],
-        cwd=str(ENGINE_ROOT),
-        env=env,
-        stdout=stdout,
-        stderr=subprocess.STDOUT,
-        creationflags=creationflags,
-        close_fds=os.name != "nt",
-    )
+    log_handle = open(log_path, "a", encoding="utf-8")
+    try:
+        _detached_popen(
+            [str(python), str(app_path)],
+            env=env,
+            cwd=str(ENGINE_ROOT),
+            stdout=log_handle,
+        )
+    finally:
+        log_handle.close()
     return {"running": True, "port": port, "message": f"Python server start requested on port {port}."}
 
 
 def stop_python_server(port: int = ETL_PORT) -> dict:
     pids = listening_pids(port)
-    killed: list[int] = []
+    targets: list[int] = []
     for pid in pids:
+        targets.append(_reloader_parent_pid(pid) or pid)
+    killed: list[int] = []
+    for pid in dict.fromkeys(targets):
         subprocess.run(
             ["taskkill", "/PID", str(pid), "/T", "/F"],
             capture_output=True,
@@ -342,23 +415,35 @@ def stop_python_server(port: int = ETL_PORT) -> dict:
 
 
 def schedule_python_server_restart(port: int = ETL_PORT) -> dict:
-    """Detach a helper that stops then starts the Flask process after this request returns."""
+    """Start a helper outside this process tree so stopping the server does not kill it."""
     helper = ENGINE_ROOT / "scripts" / "restart_flask.py"
     python = _engine_python()
-    env = os.environ.copy()
-    env["PYTHONPATH"] = str(ENGINE_ROOT)
-    env["ETL_PORT"] = str(port)
-    creationflags = 0
-    if os.name == "nt":
-        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
-    subprocess.Popen(
-        [str(python), str(helper), "--delay", "2"],
-        cwd=str(ENGINE_ROOT),
-        env=env,
-        creationflags=creationflags,
-        close_fds=os.name != "nt",
+    command = subprocess.list2cmdline([str(python), str(helper), "--delay", "1", "--port", str(port)])
+    cwd = str(ENGINE_ROOT)
+    # Win32_Process.Create parents the helper to WMI, not to Flask.
+    # taskkill /T of the listening process then cannot kill the helper,
+    # and the helper does not inherit the listening socket.
+    # EncodedCommand avoids quoting the helper path through powershell -Command.
+    script = (
+        "$p = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ "
+        f"CommandLine = '{command}'; CurrentDirectory = '{cwd}' }}; "
+        "if ($p.ReturnValue -ne 0) { exit $p.ReturnValue }"
     )
-    return {"restarting": True, "port": port, "message": f"Python server will restart on port {port}."}
+    encoded = base64.b64encode(script.encode("utf-16le")).decode("ascii")
+    subprocess.Popen(
+        ["powershell", "-NoProfile", "-EncodedCommand", encoded],
+        cwd=cwd,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+    )
+    return {
+        "restarting": True,
+        "port": port,
+        "message": f"Python server will restart on port {port}.",
+    }
 
 
 def _engine_python() -> Path:
