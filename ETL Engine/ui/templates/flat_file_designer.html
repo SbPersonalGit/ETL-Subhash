@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Flat File Migration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=10" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='flat_file_designer.css') }}?v=15" />
+</head>
+<body class="flat-file-page">
+<div id="ff-loader" class="ff-loader visible" role="status" aria-live="polite">
+  <div class="ff-loader-card">
+    <div class="ff-spinner" aria-hidden="true"></div>
+    <strong id="ff-loader-title">Loading target metadata...</strong>
+    <span id="ff-loader-detail">Please wait until object and field mapping is ready.</span>
+  </div>
+</div>
+<header class="topbar">
+  <div class="topbar-left"><a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">Flat File Migration</span></div>
+  <div class="topbar-center">
+    <div id="ff-auth-status" class="auth-status checking">
+      <span class="dot"></span> Checking target org...
+    </div>
+  </div>
+  <div class="topbar-right">
+    <a id="ff-pre-validation" href="/validation?phase=pre" class="btn btn-secondary nav-btn">Pre-validation</a>
+    <a href="/validation?phase=post" class="btn btn-secondary nav-btn">Post-validation</a>
+    <a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a>
+    <a href="/" class="btn btn-secondary nav-btn">Home</a>
+    <a href="/source-org" class="btn btn-secondary nav-btn">Source Org Migration</a>
+    <a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a>
+  </div>
+</header>
+<main class="ff-shell">
+  <section class="ff-card">
+    <h1>Client file package</h1>
+    <p>Copy CSV files into the local drop folder. For split files such as <code>Case/2021_Case_1.csv</code>, import <strong>one sample file</strong>, map it, then apply that mapping to the other CSVs in the same folder. You do not need to load all 19 files into this page.</p>
+    <div id="ff-drop-panel" class="ff-drop-panel">
+      <div class="ff-drop-toolbar">
+        <strong>Drop-folder files</strong>
+        <span id="ff-selection-count" class="ff-file-meta">0 selected</span>
+        <button id="ff-select-all" class="btn btn-secondary" type="button">Select all</button>
+        <button id="ff-clear-files" class="btn btn-secondary" type="button">Clear</button>
+        <button id="ff-refresh-files" class="btn btn-secondary" type="button">Refresh</button>
+        <button id="ff-expand-tree" class="btn btn-secondary" type="button">Expand view</button>
+      </div>
+      <div id="ff-files" class="ff-file-tree" role="tree" aria-label="CSV files in local drop folder"></div>
+      <div id="ff-drop-folder" class="ff-file-meta"></div>
+    </div>
+    <div class="ff-upload-row ff-drop-actions">
+      <button id="ff-import" class="btn btn-primary">Use selected file(s)</button>
+      <button id="ff-upload-mappings-early" class="btn btn-secondary" type="button">Upload mapping CSV</button>
+      <button id="ff-new-template" class="btn btn-secondary" type="button">New</button>
+      <select id="ff-template-select" class="org-select template-select" autocomplete="off"><option value="">Saved templates</option></select>
+      <button id="ff-load-template" class="btn btn-secondary">Load</button>
+      <button id="ff-delete-template" class="btn btn-danger" type="button" disabled>Delete</button>
+      <button id="ff-reference-identities" class="btn btn-secondary" type="button">Reference Identity templates</button>
+    </div>
+    <div id="ff-message" class="ff-message"></div>
+  </section>
+  <section id="ff-package-policy" class="ff-card ff-package-policy" hidden>
+    <div>
+      <h2>Package mapping policy</h2>
+      <p>Map source <code>Id</code> into the same external-ID API field across all compatible objects.</p>
+    </div>
+    <label>External ID for all objects
+      <input id="ff-package-external-id" class="fh-input" list="ff-external-id-suggestions"
+             placeholder="External_Id__c" />
+      <datalist id="ff-external-id-suggestions"></datalist>
+    </label>
+      <button id="ff-apply-external-id" class="btn btn-secondary">Apply to all objects</button>
+    <label class="ff-policy-checkbox">
+      <input id="ff-allow-unmapped" type="checkbox" />
+      <span>
+        Proceed with unmapped columns
+        <small>Exclude unmapped columns from the saved template instead of blocking validation.</small>
+      </span>
+    </label>
+  </section>
+  <section id="ff-actions" class="ff-card" hidden>
+    <div class="ff-form-grid">
+      <label>Template name<input id="ff-template-name" class="fh-input" placeholder="Client migration package" autocomplete="off" /></label>
+      <label>Target profile<select id="ff-target-profile" class="fh-input"></select></label>
+    </div>
+    <div class="ff-action-row">
+      <button id="ff-clean" class="btn btn-primary" hidden aria-hidden="true" tabindex="-1">Prepare Clean Files</button>
+      <button id="ff-save" class="btn btn-secondary">Save Draft Template</button>
+      <button id="ff-download-mappings" class="btn btn-secondary" type="button">Download all mappings (CSV)</button>
+      <button id="ff-download-mappings-by-object" class="btn btn-secondary" type="button">Download by object (CSV)</button>
+      <button id="ff-upload-mappings" class="btn btn-secondary" type="button">Upload mapping CSV</button>
+      <input id="ff-upload-mappings-file" type="file" accept=".csv,text/csv" hidden />
+      <button id="ff-ingest" class="btn btn-primary" disabled>Stage files for pipeline</button>
+      <button id="ff-add-pipeline" class="btn btn-primary" disabled>Add to Pipeline Designer</button>
+    </div>
+    <div id="ff-clean-result" class="ff-stage-result" role="status" aria-live="polite" hidden></div>
+    <div id="ff-stage-result" class="ff-stage-result" role="status" aria-live="polite"></div>
+  </section>
+  <section id="ff-files-panel" class="ff-stack"></section>
+</main>
+<dialog id="ff-reference-dialog" class="ff-card">
+  <h2>Reference Identity template</h2>
+  <p>Referenced objects are populated from mapped lookups. Select the target key containing the CSV lookup values.</p>
+  <label>Template name<input id="ff-reference-name" class="fh-input" placeholder="shared_reference_identities" /></label>
+  <div class="ff-reference-toolbar"><label>Load saved<select id="ff-reference-load" class="fh-input"><option value="">Load Reference Identity template</option></select></label><button id="ff-reference-scan" class="btn btn-secondary" type="button">Load all referenced objects</button></div>
+  <div class="ff-table-wrap"><table class="ff-table"><thead><tr><th>Referenced object</th><th>CSV lookup column(s)</th><th>Target match key</th></tr></thead><tbody id="ff-reference-body"></tbody></table></div>
+  <div class="ff-action-row"><button id="ff-reference-save" class="btn btn-primary">Save and apply</button><button id="ff-reference-close" class="btn btn-secondary">Close</button></div>
+</dialog>
+<dialog id="ff-polymorphic-dialog" class="ff-card ff-polymorphic-dialog">
+  <h2 id="ff-poly-title">Configure polymorphic reference</h2>
+  <p>Define how each value identifies its Salesforce object and how it resolves in the target org.</p>
+  <label>Value resolution
+    <select id="ff-poly-policy" class="fh-input">
+      <option value="target_id">Target Salesforce IDs only</option>
+      <option value="polymorphic_external_id">External IDs by object</option>
+      <option value="polymorphic_target_first">Mixed: target ID first, then external ID</option>
+    </select>
+  </label>
+  <div id="ff-poly-rules" class="ff-poly-rules"><div class="ff-table-wrap"><table class="ff-table ff-poly-table">
+    <thead><tr><th>Identify object by</th><th>Prefix/type value</th><th>Companion column</th><th>Salesforce object</th><th>Target external ID</th><th></th></tr></thead>
+    <tbody id="ff-poly-body"></tbody>
+  </table></div><button id="ff-poly-add" class="btn btn-secondary" type="button">Add object mapping</button></div>
+  <div class="ff-action-row ff-poly-actions"><button id="ff-poly-save" class="btn btn-primary" type="button">Apply mapping</button><button id="ff-poly-close" class="btn btn-secondary" type="button">Cancel</button></div>
+</dialog>
+<script src="{{ url_for('static', filename='flat_file_designer.js') }}?v=45"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Setup</title>
+  <link rel="stylesheet" href="/static/style.css?v=10" />
+  <style>
+    body.home-page { height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; display: block; }
+    .home-shell { max-width: 760px; margin: 0 auto; padding: 48px 24px; }
+    .setup-card { background: var(--panel, #0f172a); border: 1px solid var(--border, #243041); border-radius: 16px; padding: 24px; display: grid; gap: 16px; }
+    .setup-card h1 { margin: 0; font-size: 1.4rem; }
+    .setup-card p { margin: 0; color: var(--text-dim, #94a3b8); line-height: 1.5; }
+    .setup-field { display: grid; gap: 6px; }
+    .setup-field label { font-size: 0.9rem; }
+    .setup-field input { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border, #243041); background: #0b1220; color: inherit; }
+    .setup-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .setup-status { min-height: 1.4em; color: var(--text-dim, #94a3b8); }
+    .setup-status.ok { color: #86efac; }
+    .setup-status.err { color: #fca5a5; }
+    .setup-paths { font-size: 0.85rem; color: var(--text-dim, #94a3b8); display: grid; gap: 4px; }
+  </style>
+</head>
+<body class="home-page">
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="logo brand-logo" href="/" aria-label="OrgShift setup"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+    <span class="subtitle">Setup</span>
+  </div>
+  <div class="topbar-center">
+    <div id="setup-banner" class="auth-status"><span class="dot"></span> Target org session</div>
+  </div>
+  <div class="topbar-right">
+    <a href="/workspace" class="btn btn-secondary nav-btn">Workspace</a>
+    <a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a>
+  </div>
+</header>
+
+<main class="home-shell">
+  <section class="setup-card">
+    <h1>Target Salesforce connection</h1>
+    <p>TARGET_SF_LOGIN_URL and TARGET_SF_SESSION_ID are set in <strong>Open Setup.bat</strong> and saved before the server starts. Put source CSVs under <strong>Input Files / Object API Name</strong> before you migrate.</p>
+    <div id="setup-target" class="setup-paths"></div>
+    <div class="setup-actions">
+      <button id="setup-start" class="btn btn-primary" type="button">Start Python Server</button>
+      <button id="setup-restart" class="btn btn-secondary" type="button">Restart Python Server</button>
+      <a class="btn btn-secondary" href="/workspace">Open Workspace</a>
+    </div>
+    <div id="setup-status" class="setup-status">Loading current setup…</div>
+    <div id="setup-paths" class="setup-paths"></div>
+  </section>
+</main>
+<script>
+async function loadSetup() {
+  const status = document.getElementById('setup-status');
+  try {
+    const response = await fetch('/api/setup', { cache: 'no-store' });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to load setup');
+    }
+    const targetBox = document.getElementById('setup-target');
+    targetBox.innerHTML = [
+      `TARGET_SF_LOGIN_URL: ${data.TARGET_SF_LOGIN_URL || 'Not set'}`,
+      `TARGET_SF_SESSION_ID: ${data.TARGET_SF_SESSION_ID_MASKED || 'Not set'}`,
+    ].map(line => `<div>${line}</div>`).join('');
+    const banner = document.getElementById('setup-banner');
+    banner.className = data.running ? 'auth-status ok' : 'auth-status';
+    banner.innerHTML = `<span class="dot"></span> ${data.running ? 'Python server is running' : 'Python server is stopped'}`;
+    status.className = 'setup-status ok';
+    status.textContent = data.message || (data.running ? `Server running on port ${data.port}` : 'Server is not running.');
+    const pathBox = document.getElementById('setup-paths');
+    const folders = data.folders || {};
+    pathBox.innerHTML = [
+      folders.input && `Input Files: ${folders.input}`,
+      folders.pre && `Pre Validate Result: ${folders.pre}`,
+      folders.migration && `Migration Result: ${folders.migration}`,
+      folders.post && `Post Validate Result: ${folders.post}`,
+      folders.temp && `Temp Files: ${folders.temp}`,
+      folders.engine && `ETL Engine: ${folders.engine}`,
+    ].filter(Boolean).map(line => `<div>${line}</div>`).join('');
+  } catch (error) {
+    status.className = 'setup-status err';
+    status.textContent = error.message || 'Failed to load setup';
+  }
+}
+
+async function postSetup(url) {
+  const status = document.getElementById('setup-status');
+  status.className = 'setup-status';
+  status.textContent = 'Working…';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.error) {
+    throw new Error(data.error || 'Request failed');
+  }
+  return data;
+}
+
+document.getElementById('setup-start').addEventListener('click', async () => {
+  const status = document.getElementById('setup-status');
+  try {
+    const data = await postSetup('/api/setup/start');
+    status.className = 'setup-status ok';
+    status.textContent = data.message || 'Python server started.';
+    await loadSetup();
+  } catch (error) {
+    status.className = 'setup-status err';
+    status.textContent = error.message;
+  }
+});
+
+document.getElementById('setup-restart').addEventListener('click', async () => {
+  const status = document.getElementById('setup-status');
+  try {
+    const data = await postSetup('/api/setup/restart');
+    status.className = 'setup-status ok';
+    status.textContent = data.message || 'Python server is restarting…';
+    setTimeout(loadSetup, 4000);
+  } catch (error) {
+    status.className = 'setup-status err';
+    status.textContent = error.message;
+  }
+});
+
+loadSetup();
+</script>
+</body>
+</html>

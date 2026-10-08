@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Pipeline Designer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ pipeline_designer_css_v }}" />
+</head>
+<body class="pipeline-page">
+<div id="designer-launch-loader" class="designer-launch-loader" hidden role="status" aria-live="assertive">
+  <div class="designer-launch-loader-card">
+    <div class="designer-launch-spinner" aria-hidden="true"></div>
+    <strong id="designer-launch-loader-title">Preparing pipeline...</strong>
+    <span id="designer-launch-loader-detail">Validating stages and creating the run configuration.</span>
+  </div>
+</div>
+<header class="topbar pipeline-topbar">
+  <div class="topbar-left">
+    <a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+    <span class="subtitle">Pipeline Designer</span>
+  </div>
+  <div class="topbar-center"></div>
+  <div class="topbar-right">
+    <div class="topbar-inline-group">
+      <select id="designer-pipeline-type" class="org-select template-select">
+        <option value="">Select Pipeline Type</option>
+        <option value="salesforce_source">SF → SF</option>
+        <option value="flat_file">Files → SF</option>
+      </select>
+      <input id="designer-migration-name" class="org-select template-select" type="text" value="" placeholder="Enter unique Pipeline Name" autocomplete="off" />
+      <select id="designer-source-profile" class="org-select template-select" title="Source org profile"></select>
+      <select id="designer-target-profile" class="org-select template-select" title="Target org profile"></select>
+      <label class="designer-schedule-check" style="margin-left:12px;" title="Append .Invalid to email addresses during staging for sandbox targets">
+        <input id="mask-emails-checkbox" type="checkbox" />
+        <span>Mask emails (.Invalid)</span>
+      </label>
+      <label class="designer-schedule-check" title="Remove trailing .Invalid from email addresses during staging for production targets">
+        <input id="remove-email-mask-checkbox" type="checkbox" />
+        <span>Remove email mask (.Invalid)</span>
+      </label>
+      <label class="designer-schedule-check" title="Pause after transform so transformed files can be reviewed before load">
+        <input id="stop-after-transform-checkbox" type="checkbox" />
+        <span>Stop after transform for review</span>
+      </label>
+    </div>
+    <label class="designer-schedule-check designer-batch-size" title="Records per Bulk API load job. Confirmed when you click Start Migration.">
+      <span>Batch size</span>
+      <input id="designer-load-batch-size" type="number" min="100" max="100000" step="100" value="50000" />
+    </label>
+    <button id="designer-run-validation-pipeline" class="btn btn-secondary">Run Pre-validation</button>
+    <button id="designer-skip-validation-pipeline" class="btn btn-secondary">Skip Pre-validation</button>
+    <button id="designer-start-pipeline" class="btn btn-primary">Start Migration</button>
+    <button id="designer-schedule-pipeline" class="btn btn-secondary">Schedule</button>
+    <button id="designer-run-post-validation" class="btn btn-secondary">Run Post Validation</button>
+    <details class="topbar-menu">
+      <summary>Verify</summary>
+      <div class="topbar-menu-body">
+        <button id="designer-open-verify" class="btn btn-secondary">Verify Self Lookup</button>
+        <button id="designer-open-verify-records" class="btn btn-secondary">Verify Records</button>
+        <button id="designer-open-report-refs" class="btn btn-secondary">Report Last Level Refs</button>
+      </div>
+    </details>
+    <details class="topbar-menu">
+      <summary>Config</summary>
+      <div class="topbar-menu-body">
+        <select id="designer-snapshot-select" class="org-select template-select">
+          <option value="">Saved Pipelines</option>
+        </select>
+        <button id="designer-save-snapshot" class="btn btn-secondary">Save Snapshot</button>
+        <button id="designer-load-snapshot" class="btn btn-secondary">Load Snapshot</button>
+        <button id="designer-delete-snapshot" class="btn btn-danger">Delete Snapshot</button>
+        <button id="designer-clear-pipeline" class="btn btn-secondary">Clear Pipeline</button>
+        <button id="designer-preview-config" class="btn btn-secondary">Preview YAML</button>
+        <button id="designer-save-config" class="btn btn-secondary">Save Pipeline</button>
+      </div>
+    </details>
+    <details class="topbar-menu">
+      <summary>Navigate</summary>
+      <div class="topbar-menu-body">
+        <button id="designer-open-current-tab" class="btn btn-secondary">Open Current In New Tab</button>
+        <button id="designer-open-empty-tab" class="btn btn-secondary">Open New Pipeline Page</button>
+        <a href="/" class="btn btn-secondary nav-btn">Home</a>
+        <a href="/source-org" class="btn btn-secondary nav-btn">Source Org Migration</a>
+        <a href="/flat-files" class="btn btn-secondary nav-btn">Flat File Migration</a>
+        <a href="/validation" class="btn btn-secondary nav-btn">Validation Center</a>
+        <a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<div class="pipeline-designer-layout">
+  <aside class="pipeline-library">
+    <div class="pipeline-library-header">
+      <div>
+        <div class="pipeline-library-title">Template Library</div>
+        <div id="designer-library-subtitle" class="pipeline-library-subtitle">Select a pipeline type to see matching templates.</div>
+      </div>
+    </div>
+    <div class="pipeline-library-search">
+      <input id="designer-template-search" class="object-search" type="text" placeholder="Search templates..." />
+      <div id="designer-domain-filters" class="pipeline-library-domain-filters" hidden>
+        <select id="designer-filter-source-domain" class="org-select template-select" title="Filter by source org domain">
+          <option value="">All source orgs</option>
+        </select>
+        <select id="designer-filter-target-domain" class="org-select template-select" title="Filter by target org domain">
+          <option value="">All target orgs</option>
+        </select>
+      </div>
+    </div>
+    <div id="designer-template-list" class="pipeline-library-list"></div>
+  </aside>
+
+  <main class="pipeline-canvas">
+    <div class="pipeline-canvas-header">
+      <div>
+        <div class="pipeline-canvas-title">Pipeline Flow</div>
+        <div id="designer-pipeline-meta" class="pipeline-canvas-subtitle">
+          Build a stage-by-stage pipeline similar to Informatica mappings, then generate one ordered migration config.
+        </div>
+      </div>
+    </div>
+    <div id="designer-schedule-panel" class="designer-schedule-panel" hidden></div>
+    <div id="designer-pipeline-flow" class="designer-pipeline-flow"></div>
+  </main>
+</div>
+
+<div id="designer-yaml-modal" class="modal-overlay" style="display:none">
+  <div class="modal designer-yaml-modal">
+    <div class="modal-header">
+      <span>Generated Pipeline YAML</span>
+      <button id="designer-yaml-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions">
+      <button id="designer-yaml-copy" class="btn btn-secondary">Copy</button>
+    </div>
+    <pre id="designer-yaml-output" class="yaml-output"></pre>
+  </div>
+</div>
+
+<div id="designer-transform-modal" class="modal-overlay" style="display:none">
+  <div class="modal designer-transform-modal">
+    <div class="modal-header">
+      <span id="designer-transform-title">Stage Transforms</span>
+      <button id="designer-transform-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions designer-transform-toolbar">
+      <div id="designer-transform-subtitle" class="designer-transform-subtitle">Manage field transformations for the selected stage.</div>
+    </div>
+    <div id="designer-transform-content" class="designer-transform-content"></div>
+  </div>
+</div>
+
+<div id="designer-verify-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span>Verify Self Lookup</span>
+      <button id="designer-verify-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions designer-verify-form">
+      <label class="designer-verify-label">
+        <span>Stage ID</span>
+        <select id="designer-verify-pipeline" class="org-select template-select"></select>
+      </label>
+      <label class="designer-verify-label">
+        <span>Object</span>
+        <select id="designer-verify-object" class="org-select template-select"></select>
+      </label>
+      <label class="designer-verify-label">
+        <span>Field</span>
+        <input id="designer-verify-field" class="fh-input" type="text" placeholder="Optional auto-detect" />
+      </label>
+      <label class="designer-verify-label">
+        <span>Sample Size</span>
+        <input id="designer-verify-sample-size" class="fh-input" type="number" min="1" value="25" />
+      </label>
+      <button id="designer-run-verify" class="btn btn-primary">Run Verify</button>
+    </div>
+  </div>
+</div>
+
+<div id="designer-verify-records-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span>Verify Records</span>
+      <button id="designer-verify-records-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions designer-verify-form">
+      <label class="designer-verify-label">
+        <span>Run Dir</span>
+        <input id="designer-verify-records-run-dir" class="fh-input" type="text" placeholder='exports/run_20260415_134327' />
+      </label>
+      <label class="designer-verify-label">
+        <span>Stage ID</span>
+        <select id="designer-verify-records-pipeline" class="org-select template-select"></select>
+      </label>
+      <label class="designer-verify-label">
+        <span>Object</span>
+        <select id="designer-verify-records-object" class="org-select template-select"></select>
+      </label>
+      <button id="designer-run-verify-records" class="btn btn-primary">Run Verify Records</button>
+    </div>
+  </div>
+</div>
+
+<div id="designer-report-refs-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span>Report Last Level Refs</span>
+      <button id="designer-report-refs-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions designer-verify-form">
+      <label class="designer-verify-label">
+        <span>Run Dir</span>
+        <input id="designer-report-refs-run-dir" class="fh-input" type="text" placeholder='exports/run_20260413_160729' />
+      </label>
+      <label class="designer-verify-label">
+        <span>Stage ID</span>
+        <select id="designer-report-refs-pipeline" class="org-select template-select"></select>
+      </label>
+      <label class="designer-verify-label">
+        <span>From Last Level</span>
+        <input id="designer-report-refs-from-last-level" class="fh-input" type="number" min="0" value="0" />
+      </label>
+      <button id="designer-run-report-refs" class="btn btn-primary">Run Ref Report</button>
+    </div>
+  </div>
+</div>
+
+<div id="designer-schedule-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm designer-schedule-modal">
+    <div class="modal-header">
+      <span>Schedule Migration</span>
+      <button id="designer-schedule-close" class="modal-close">x</button>
+    </div>
+    <div class="modal-actions designer-verify-form">
+      <p class="designer-schedule-help">
+        Queue this saved pipeline to start later. The Flask UI must stay open. While a job is waiting, this PC is asked not to sleep.
+      </p>
+      <label class="designer-schedule-check">
+        <input id="designer-schedule-after-current" type="checkbox" checked />
+        <span>Start after the current migration finishes</span>
+      </label>
+      <label class="designer-schedule-check">
+        <input id="designer-schedule-at-time" type="checkbox" />
+        <span>Start at this time</span>
+      </label>
+      <label class="designer-verify-label">
+        <span>Date and time</span>
+        <input id="designer-schedule-datetime" class="fh-input" type="datetime-local" />
+      </label>
+      <label class="designer-verify-label">
+        <span>How to run stages</span>
+        <select id="designer-schedule-stage-mode" class="org-select template-select">
+          <option value="separate_runs">Each stage as its own run (recommended for Files → SF)</option>
+          <option value="single_run">One combined run</option>
+        </select>
+      </label>
+      <label class="designer-verify-label">
+        <span>Start from stage</span>
+        <select id="designer-schedule-start-from" class="org-select template-select"></select>
+      </label>
+      <button id="designer-schedule-submit" class="btn btn-primary">Queue Schedule</button>
+    </div>
+  </div>
+</div>
+
+  <script src="{{ url_for('static', filename='source_lookup_policy.js') }}?v={{ pipeline_designer_js_v }}"></script>
+  <script src="{{ url_for('static', filename='pipeline_designer.js') }}?v={{ pipeline_designer_js_v }}"></script>
+</body>
+</html>

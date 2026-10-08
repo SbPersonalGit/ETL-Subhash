@@ -1,0 +1,81 @@
+deletion:
+  name: Example Target Cleanup
+
+targets:
+  - object: Trip_Team_Member__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Consent_History__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Consent__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Lead
+    where: "Prod_Record_Id__c != null"
+
+  - object: Contact
+    where: "Prod_Record_Id__c != null"
+
+  - object: Itinerary__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Case
+    where: "Prod_Record_Id__c != null"
+
+  - object: Itinerary_Line_Item__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Itinerary_Price_Breakdown_Group__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Opportunity
+    where: "Prod_Record_Id__c != null"
+
+  - object: Order
+    where: "Prod_Record_Id__c != null"
+
+  - object: Payment_Schedule__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Transaction__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Account
+    where: "Prod_Record_Id__c != null"
+
+  - object: Passenger__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Service__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Trip__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Destination__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Quote
+    where: "Prod_Record_Id__c != null"
+
+  - object: Contract
+    where: "Prod_Record_Id__c != null"
+
+  - object: Content_Item_Version__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Payment_Gateway__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Passenger_Party__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Interest__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Content_Item__c
+    where: "Prod_Record_Id__c != null"
+
+  - object: Legal_Document__c
+    where: "Prod_Record_Id__c != null"

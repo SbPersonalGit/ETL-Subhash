@@ -1,0 +1,141 @@
+# ============================================================
+# SF ETL — Migration Config Example
+# Copy this to config/migration.yaml and fill in your details
+# ============================================================
+
+migration:
+  name: "Production to UAT - Full Migration"
+  api_version: "59.0"
+
+# ---- Org credentials are loaded from .env (not stored here) ----
+# SOURCE_SF_LOGIN_URL, SOURCE_SF_CLIENT_ID, SOURCE_SF_CLIENT_SECRET, etc.
+
+# ---- Pipelines (executed sequentially in order) ----
+# Each pipeline runs fully before the next starts.
+# Objects within a pipeline are ordered by dependency (auto-detected).
+# Use 'depends_on' to override auto-detected ordering.
+
+pipelines:
+
+  # ---- Pipeline 1: Setup / Reference Data ----
+  # Must run first — every other object references these.
+  - id: setup
+    name: "Setup Data"
+    order: 1
+    objects:
+
+      - name: UserRole
+        external_id: External_Id__c
+
+      - name: User
+        external_id: External_Id__c
+        match_by: Username             # match by Username instead of ID remap
+        query_filter: "WHERE IsActive = true AND UserType = 'Standard'"
+
+      - name: RecordType
+        external_id: DeveloperName     # RecordTypes are matched by DeveloperName
+
+      - name: Pricebook2
+        external_id: External_Id__c
+        query_filter: "WHERE IsActive = true"
+
+      - name: Product2
+        external_id: External_Id__c
+        query_filter: "WHERE IsActive = true"
+
+  # ---- Pipeline 2: Core / Master Data ----
+  - id: core
+    name: "Core Data"
+    order: 2
+    depends_on: [setup]
+    objects:
+
+      - name: Account
+        external_id: External_Id__c
+        query_filter: "WHERE IsDeleted = false"
+        transforms:
+          - type: value_map
+            field: Industry
+            map:
+              Technology: Tech
+              "Financial Services": Finance
+            default: Other
+          - type: null_default
+            field: BillingCountry
+            default: "United States"
+
+      - name: Campaign
+        external_id: External_Id__c
+        query_filter: "WHERE IsActive = true"
+
+  # ---- Pipeline 3: Transaction Data ----
+  - id: transactions
+    name: "Transaction Data"
+    order: 3
+    depends_on: [core]
+    objects:
+
+      - name: Contact
+        external_id: External_Id__c
+        transforms:
+          - type: trim
+            field: Email
+          - type: lowercase
+            field: Email
+          - type: anonymize_email
+            field: Email
+            mode: replace_domain
+            domain: mask.com
+          - type: anonymize_email
+            field: Alternate_Email__c
+            mode: append_suffix
+            suffix: mask
+          - type: anonymize_email
+            field: Personal_Email__c
+            mode: fixed_local
+            local_part: maskedemail
+          - type: anonymize_email
+            field: Backup_Email__c
+            mode: hash
+            domain: masked.example
+          - type: anonymize_phone
+            field: Phone
+          - type: anonymize_phone
+            field: MobilePhone
+
+      - name: Opportunity
+        external_id: External_Id__c
+        query_filter: "WHERE IsClosed = false"
+        transforms:
+          - type: value_map
+            field: StageName
+            map:
+              "Prospecting": "01 - Prospecting"
+              "Qualification": "02 - Qualification"
+              "Proposal/Price Quote": "03 - Proposal"
+              "Closed Won": "07 - Closed Won"
+              "Closed Lost": "08 - Closed Lost"
+
+      - name: Case
+        external_id: External_Id__c
+        query_filter: "WHERE IsClosed = false"
+
+  # ---- Pipeline 4: Related / Child Data ----
+  - id: related
+    name: "Related Data"
+    order: 4
+    depends_on: [transactions]
+    objects:
+
+      - name: OpportunityLineItem
+        external_id: External_Id__c
+
+      - name: CaseComment
+        external_id: External_Id__c
+
+      - name: Task
+        external_id: External_Id__c
+        query_filter: "WHERE IsClosed = false"
+
+      - name: ContactPointAddress
+        external_id: External_Id__c

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Pipeline Runs</title>
+  <link rel="stylesheet" href="/static/style.css?v=15" />
+</head>
+<body class="pipeline-page pipeline-runs-page">
+  <header class="topbar pipeline-topbar">
+  <div class="topbar-left"><a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">Pipeline Runs</span></div>
+  <div class="topbar-center"><div id="runs-banner" class="auth-status checking"><span class="dot"></span> Loading run history...</div></div>
+  <div class="topbar-right"><button id="runs-refresh" class="btn btn-secondary">Refresh</button><a href="/validation" class="btn btn-secondary nav-btn">Validation</a><a href="/flat-files" class="btn btn-secondary nav-btn">Flat Files</a><a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a></div>
+</header>
+<main class="run-progress-layout">
+  <section class="pipeline-canvas run-progress-summary">
+    <div class="pipeline-canvas-header"><div><div class="pipeline-canvas-title">All application activities</div><div class="pipeline-canvas-subtitle">Migration, validation, General Utility, and Storage Health status from the persistent audit.</div></div><div class="runs-filter-row"><select id="runs-activity-filter" class="fh-input"><option value="">All activity types</option><option value="MIGRATION">Migrations</option><option value="VALIDATION">Validations</option></select><select id="runs-operation-filter" class="fh-input"><option value="">All operations</option><option value="UPSERT">Upsert</option><option value="INSERT">Insert</option><option value="UPDATE">Update</option><option value="DELETE">Delete</option><option value="CREATE FIELDS">Create fields</option><option value="FULL SCAN">Full validation</option><option value="SAMPLE">Sample validation</option><option value="ARCHIVE">Archive</option><option value="CLEANUP">Cleanup</option><option value="RESTORE">Restore</option></select><input id="runs-search" class="object-search" placeholder="Search run, migration, pipeline, or status" /></div></div>
+    <div class="pipeline-runs-table-wrap"><table class="pipeline-runs-table"><thead><tr><th>Activity</th><th>Template / migration / pipeline</th><th>Operation</th><th>Status</th><th>Started</th><th>Target</th><th>Actions</th></tr></thead><tbody id="runs-body"></tbody></table></div>
+    <div class="runs-pager" id="runs-pager">
+      <button id="runs-prev" class="btn btn-secondary btn-sm" type="button" disabled>Previous</button>
+      <span id="runs-page-label" class="runs-page-label">Loading...</span>
+      <button id="runs-next" class="btn btn-secondary btn-sm" type="button" disabled>Next</button>
+    </div>
+  </section>
+</main>
+<script src="/static/pipeline_runs.js?v=14"></script>
+</body>
+</html>

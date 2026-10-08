@@ -1,0 +1,190 @@
+{
+  "generated_at": "2026-07-31T15:56:49.017411+00:00",
+  "hierarchy_source": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\temp\\hierarchy_edit\\waygate_object_hierarchy.xlsx",
+  "wave": "Wave 1",
+  "requested_coverage_percent": 20.0,
+  "records_per_object": 100,
+  "total_records": 1000,
+  "load_order": [
+    "Account_Plan_Initiative__c",
+    "BA_Condition_Master__c",
+    "BA_Inco_Terms__c",
+    "BA_LE_Override__c",
+    "BA_LE_Preferences__c",
+    "BA_Legal_Entity__c",
+    "BA_Questionnaire__c",
+    "BA_Tier3_Threshold__c",
+    "BA_Treaty_Matrix__c",
+    "BH_MCS_SMAXDSCUSTOMERASSETS__c"
+  ],
+  "target_org_owner": {
+    "attributes": {
+      "type": "User",
+      "url": "/services/data/v60.0/sobjects/User/005S900000blwJzIAI"
+    },
+    "Id": "005S900000blwJzIAI",
+    "Username": "beauty.kumari@nagarro.com.dev1"
+  },
+  "objects": [
+    {
+      "order": 1,
+      "object": "Account_Plan_Initiative__c",
+      "csv": "upload_files/Account_Plan_Initiative__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 4,
+      "selected_fields": 4,
+      "populated_fields": 4,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 11,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 2,
+      "object": "BA_Condition_Master__c",
+      "csv": "upload_files/BA_Condition_Master__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 4,
+      "selected_fields": 4,
+      "populated_fields": 4,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 11,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 3,
+      "object": "BA_Inco_Terms__c",
+      "csv": "upload_files/BA_Inco_Terms__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 3,
+      "selected_fields": 3,
+      "populated_fields": 3,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 12,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 4,
+      "object": "BA_LE_Override__c",
+      "csv": "upload_files/BA_LE_Override__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 5,
+      "selected_fields": 5,
+      "populated_fields": 5,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 10,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 5,
+      "object": "BA_LE_Preferences__c",
+      "csv": "upload_files/BA_LE_Preferences__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 5,
+      "selected_fields": 5,
+      "populated_fields": 5,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 10,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 6,
+      "object": "BA_Legal_Entity__c",
+      "csv": "upload_files/BA_Legal_Entity__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 3,
+      "selected_fields": 3,
+      "populated_fields": 3,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 12,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 7,
+      "object": "BA_Questionnaire__c",
+      "csv": "upload_files/BA_Questionnaire__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 7,
+      "selected_fields": 7,
+      "populated_fields": 7,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 8,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 9,
+      "object": "BA_Tier3_Threshold__c",
+      "csv": "upload_files/BA_Tier3_Threshold__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 6,
+      "selected_fields": 6,
+      "populated_fields": 6,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 9,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 10,
+      "object": "BA_Treaty_Matrix__c",
+      "csv": "upload_files/BA_Treaty_Matrix__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 3,
+      "selected_fields": 3,
+      "populated_fields": 3,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 12,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    },
+    {
+      "order": 12,
+      "object": "BH_MCS_SMAXDSCUSTOMERASSETS__c",
+      "csv": "upload_files/BH_MCS_SMAXDSCUSTOMERASSETS__c.csv",
+      "records": 100,
+      "writable_non_calculated_fields": 4,
+      "selected_fields": 4,
+      "populated_fields": 4,
+      "coverage_percent": 100.0,
+      "requested_minimum_fields": 15,
+      "eligible_field_shortfall": 11,
+      "record_lookup_count": 0,
+      "global_target_references": [
+        "OwnerId"
+      ]
+    }
+  ]
+}

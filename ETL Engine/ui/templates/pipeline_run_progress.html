@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Pipeline Run</title>
+  <link rel="stylesheet" href="/static/style.css?v=13" />
+</head>
+<body class="pipeline-page run-progress-page" data-run-key="{{ run_key|e }}">
+  <header class="topbar pipeline-topbar">
+    <div class="topbar-left">
+      <a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+      <span class="subtitle">Pipeline Progress</span>
+    </div>
+    <div class="topbar-center">
+      <div id="run-progress-banner" class="auth-status checking">
+        <span class="dot"></span> Loading run status...
+      </div>
+    </div>
+    <div class="topbar-right">
+      <label class="run-progress-resume-control">
+        Resume at
+        <select id="run-progress-resume-stage" class="fh-input">
+          <option value="transform">Transform</option>
+          <option value="load">Load</option>
+        </select>
+      </label>
+      <span class="pipeline-library-item-meta">Use `Load` after reviewing transformed files.</span>
+      <button id="run-progress-stop" class="btn btn-danger" disabled>Stop Pipeline</button>
+      <button id="run-progress-refresh" class="btn btn-secondary">Refresh</button>
+      <a id="run-progress-logs-link" href="/pipeline/logs?run_key={{ run_key|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary nav-btn">Open Logs</a>
+      <a href="/validation?run_key={{ run_key|urlencode }}" class="btn btn-secondary nav-btn">Validate Data</a>
+      <a href="/pipeline/runs" class="btn btn-secondary nav-btn">All Runs</a>
+      <a href="/pipeline" class="btn btn-secondary nav-btn">Back To Pipelines</a>
+    </div>
+  </header>
+
+  <main class="run-progress-layout">
+    <section class="pipeline-canvas run-progress-summary">
+      <div class="pipeline-canvas-header">
+        <div>
+          <div id="run-progress-title" class="pipeline-canvas-title">Pipeline run</div>
+          <div id="run-progress-meta" class="pipeline-canvas-subtitle">Run key: {{ run_key|e }}</div>
+          <div class="run-percent"><div class="run-percent-track"><span id="run-progress-fill"></span></div><strong id="run-progress-percent">0%</strong><small id="run-progress-count"></small></div>
+        </div>
+      </div>
+      <div id="run-progress-pipelines" class="run-progress-grid">
+        <div class="designer-flow-empty">Waiting for the first status update...</div>
+      </div>
+    </section>
+
+    <section class="designer-log-panel run-progress-log-panel">
+      <div class="designer-log-header">
+        <div>
+          <div class="pipeline-canvas-title">Live Run Logs</div>
+          <div id="run-progress-log-meta" class="pipeline-canvas-subtitle">Waiting for log data...</div>
+        </div>
+      </div>
+      <pre id="run-progress-log-output" class="designer-log-output">No logs yet.</pre>
+    </section>
+  </main>
+
+  <script src="/static/pipeline_run_progress.js?v=12"></script>
+</body>
+</html>

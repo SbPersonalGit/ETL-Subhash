@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Pipeline Logs</title>
+  <link rel="stylesheet" href="/static/style.css?v=13" />
+</head>
+<body class="pipeline-page log-viewer-page">
+  <header class="topbar pipeline-topbar">
+    <div class="topbar-left">
+      <a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+      <span class="subtitle">Pipeline Logs</span>
+    </div>
+    <div class="topbar-center">
+      <div id="log-viewer-banner" class="auth-status checking">
+        <span class="dot"></span> Loading logs...
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button id="log-viewer-refresh" class="btn btn-secondary">Refresh Logs</button>
+      <button id="log-viewer-clear" class="btn btn-danger">Clear Logs</button>
+      <a href="/pipeline" class="btn btn-secondary nav-btn">Back To Pipeline</a>
+    </div>
+  </header>
+
+  <main class="log-viewer-layout">
+    <section class="designer-log-panel log-viewer-panel">
+      <div class="designer-log-header">
+        <div>
+          <div class="pipeline-canvas-title">Live Run Logs</div>
+          <div id="log-viewer-meta" class="pipeline-canvas-subtitle">Waiting for log data...</div>
+        </div>
+      </div>
+      <pre id="log-viewer-output" class="designer-log-output">No logs yet.</pre>
+    </section>
+  </main>
+
+  <script src="/static/pipeline_logs.js?v=2"></script>
+</body>
+</html>

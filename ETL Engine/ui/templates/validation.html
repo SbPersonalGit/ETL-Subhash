@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OrgShift - Validation Center</title><link rel="stylesheet" href="/static/style.css?v=19"></head>
+<body class="pipeline-page validation-page" data-run-key="{{ initial_run_key|e }}" data-pipeline-id="{{ initial_pipeline_id|e }}" data-phase="{{ initial_phase|e }}" data-template-id="{{ initial_template_id|e }}">
+<header class="topbar pipeline-topbar"><div class="topbar-left"><a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">Validation Center</span></div><div class="topbar-center"><div id="validation-banner" class="auth-status checking"><span class="dot"></span> Select validation phase</div></div><div class="topbar-right"><a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a><a href="/flat-files" class="btn btn-secondary nav-btn">Flat Files</a><a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a></div></header>
+<div id="validation-result" class="validation-top-message" role="status" aria-live="assertive" hidden></div>
+<main class="run-progress-layout"><section class="pipeline-canvas run-progress-summary">
+<div class="pipeline-canvas-header"><div><div class="pipeline-canvas-title">Configure validation</div><div class="pipeline-canvas-subtitle">Validate files before migration or verify immutable run artifacts after migration.</div></div></div>
+<div id="validation-workflow-tabs" class="validation-workflow-tabs post-option"><button id="validation-tab-migration" type="button" class="btn btn-primary">Migration-based</button><button id="validation-tab-file" type="button" class="btn btn-secondary">File-based</button><button id="validation-tab-column-analysis" type="button" class="btn btn-secondary">Column Analysis</button></div>
+<section id="validation-column-analysis-panel" class="validation-file-panel" hidden>
+<div class="pipeline-canvas-title">CSV column population analysis</div>
+<div class="pipeline-canvas-subtitle">Find columns that contain values in at least N records before choosing validation fields. Analysis is read-only, streams large CSVs, and produces file-wise and consolidated reports.</div>
+<div class="validation-form-grid">
+<label>CSV file or folder paths<textarea id="validation-column-analysis-paths" class="fh-input validation-soql-input" rows="7" placeholder="C:\path\to\file1.csv&#10;C:\path\to\file2.csv&#10;C:\path\to\folder"></textarea><small>Enter one path per line. A folder includes its CSV files and CSV files in immediate child folders.</small></label>
+<label>Minimum records with values<input id="validation-column-analysis-minimum" class="fh-input" type="number" min="1" max="100000000" value="100"><small>A whitespace-only value is treated as empty. The consolidated report applies this threshold to the combined non-empty count.</small></label>
+</div>
+<div id="validation-column-analysis-summary" class="validation-analysis-summary" hidden></div>
+</section>
+<section id="validation-file-panel" class="validation-file-panel" hidden>
+<div class="pipeline-canvas-subtitle">Validate one local CSV (or a folder of CSVs for the same object) directly against the target. Columns and rows come from the source file(s). Choose Object + Template (include/exclude) or Custom SOQL (SELECT fields only; CSV IDs still drive WHERE).</div>
+<div class="validation-form-grid">
+<label>CSV file or folder path<input id="validation-file-path" class="fh-input" placeholder="C:\path\to\records.csv or C:\path\to\folder"><small>One CSV file, or a folder of CSVs for the same object.</small><details class="validation-help-details"><summary>More about folder validation</summary><small>Includes one level of subfolders. Column sets may differ across files: the app unions columns for target retrieval, then compares each record only on columns from its source file. Large runs write a mismatch-by-field summary and per-source retrieved target CSVs; full Excel/mismatch dumps are skipped when too large. Per-file limit 1 GiB; total sources 10 GiB — split by records if exceeded.</small></details></label>
+<label>Target object<select id="validation-file-object" class="fh-input"><option value="">Loading target objects...</option></select></label>
+<label>CSV ID column<input id="validation-file-id-column" class="fh-input" value="Id" placeholder="Id"></label>
+<label>Target match field<select id="validation-file-target-key" class="fh-input"><option value="">Select a target object first</option></select><small>External ID fields from the selected target object; External_Id__c is preferred when available.</small></label>
+<label>File field mode<select id="validation-file-query-mode-kind" class="fh-input"><option value="object_template" selected>Object + Template (include / exclude)</option><option value="custom_soql">Custom SOQL (SELECT fields only)</option></select><small>Both modes still match rows by CSV IDs. Custom SOQL uses only your SELECT list for target columns.</small></label>
+</div>
+<div id="validation-file-object-template-panel" class="validation-form-grid">
+<label>Reference template (optional)<select id="validation-file-reference-template" class="fh-input"><option value="">None — detect or map lookups below</option></select><small>Optional prefill for the Lookup External ID mappings table. You can edit mappings after loading.</small></label>
+<label>Include fields (optional)<input id="validation-file-include-fields" class="fh-input" placeholder="Name, Phone, Parent.External_Id__c"><small>Comma-separated API names / relationship paths to compare. Empty = all CSV-overlapping candidates.</small></label>
+<label>Exclude / Ignore fields (optional)<input id="validation-file-ignore-fields" class="fh-input" placeholder="CreatedDate, CreatedById, LastModifiedDate"><small>Comma-separated API names excluded from retrieval/compare.</small></label>
+</div>
+<div id="validation-file-lookup-panel" class="validation-lookup-panel">
+<div class="validation-lookup-header"><div><strong>Lookup External ID mappings</strong><small>Map CSV reference columns to the parent External ID used for comparison (same idea as Flat Files templates). Polymorphic lookups are skipped.</small></div><div class="validation-lookup-actions"><button type="button" id="validation-file-detect-lookups" class="btn btn-secondary">Detect lookup mappings</button></div></div>
+<div class="validation-lookup-table-wrap"><table class="validation-lookup-table" id="validation-file-lookup-table"><thead><tr><th>Use</th><th>CSV column</th><th>Target lookup</th><th>Parent object</th><th>Parent External ID</th></tr></thead><tbody id="validation-file-lookup-body"><tr class="validation-lookup-empty"><td colspan="5">Click Detect lookup mappings after choosing a CSV path and target object. Optional reference template can also prefill this table.</td></tr></tbody></table></div>
+<small id="validation-file-lookup-note" class="validation-lookup-note"></small>
+</div>
+<div id="validation-file-custom-soql-panel" class="validation-form-grid" hidden>
+<label class="validation-soql-label">Custom SOQL<textarea id="validation-file-custom-soql" class="fh-input validation-soql-input" rows="12" placeholder="SELECT Id, Name, BillingCountry, Parent.External_Id__c&#10;FROM Account&#10;WHERE External_Id__c != null"></textarea><small>Only the SELECT field list is used. System always filters with CSV match IDs (<code>WHERE match_field IN (...)</code>). Your WHERE / ORDER BY / LIMIT are ignored. Columns present only in CSV or only in SOQL are skipped (not mismatches). Lookup mappings above still enrich CSV reference columns when enabled.</small></label>
+</div>
+<div class="validation-form-grid">
+<label>Validation scan scope<select id="validation-file-scan-mode" class="fh-input"><option value="sample">Quick sample: first N unique IDs</option><option value="full" selected>Full validation: every row</option></select></label>
+<label id="validation-file-sample-size-label" hidden>Sample size (unique IDs)<input id="validation-file-sample-size" class="fh-input" type="number" min="1" max="1000000" value="1000"><small>Keeps the first N unique match IDs after loading source files. Useful for dry-runs on large CSVs.</small></label>
+<label>Target retrieval<select id="validation-file-query-mode" class="fh-input"><option value="auto" selected>Auto (Bulk when ≥ 2,000 keys)</option><option value="bulk">Bulk API 2.0 (org-wide keyed query)</option><option value="rest">REST API (chunked IN queries)</option></select><small>Auto uses Bulk for large key sets. REST is safer for smaller samples; Bulk is better for very large full scans.</small></label>
+<label id="validation-file-batch-size-label" hidden>REST ID batch size<input id="validation-file-batch-size" class="fh-input" type="number" min="25" max="500" value="200"><small>IDs per SOQL IN clause when using REST (default 200). Lower if queries time out; higher can reduce round-trips.</small></label>
+</div>
+</section>
+<div id="validation-migration-panel">
+<div class="validation-form-grid">
+<input id="validation-phase" type="hidden" value="{{ initial_phase|e }}">
+<label class="post-option">Migration run (parent)<select id="validation-run" class="fh-input"></select></label><label class="post-option">Pipeline in selected run<select id="validation-pipeline" class="fh-input"></select></label>
+<label class="post-option">Validation mode<select id="validation-mode" class="fh-input"><option value="source-target">Source → Target (recommended)</option><option value="stage-target">Stage → Target</option><option value="source-stage">Source → Stage</option></select></label>
+<label class="post-option">Source files<select id="validation-source-kind" class="fh-input"><option value="uploaded">Original uploaded</option><option value="cleaned">Accepted cleaned</option></select></label>
+<label class="pre-option">Saved migration template<select id="validation-template" class="fh-input"></select></label>
+<label>Validation scan scope<select id="validation-scan-mode" class="fh-input"><option value="sample">Quick sample: configured rows per object</option><option value="full" selected>Full validation: every row</option></select></label>
+<label id="validation-sample-size-label">Sample rows per object<input id="validation-sample-size" class="fh-input" type="number" min="1" max="1000000" value="1000"></label><label id="validation-sample-seed-label">Target sample seed<input id="validation-sample-seed" class="fh-input" type="number" value="42"></label>
+<label class="target-option">Target retrieval<select id="validation-query-mode" class="fh-input"><option value="auto">Auto (recommended)</option><option value="bulk">Bulk API 2.0</option><option value="rest">REST API</option></select></label></div>
+<input id="validation-target-aware" type="hidden" value="0">
+<fieldset class="pre-option validation-checks"><legend>Optional validation checks</legend>
+<div class="validation-object-grid" id="validation-optional-checks">
+<label class="validation-object-option"><input type="checkbox" value="date_formats" checked> <span>Date and time formats</span></label>
+<label class="validation-object-option"><input type="checkbox" value="restricted_picklists" checked> <span>Restricted picklists</span></label>
+<label class="validation-object-option"><input type="checkbox" value="dependent_picklists" checked> <span>Dependent picklist combinations</span></label>
+<label class="validation-object-option"><input type="checkbox" value="master_detail_references" checked> <span>Master-detail references</span></label>
+<label class="validation-object-option"><input type="checkbox" value="duplicate_keys"> <span>Duplicate migration keys</span></label>
+<label class="validation-object-option"><input type="checkbox" value="required_fields"> <span>Required field values</span></label>
+<label class="validation-object-option"><input type="checkbox" value="lookup_references"> <span>Normal lookup references</span></label>
+<label class="validation-object-option"><input type="checkbox" value="text_limits"> <span>Text and byte limits</span></label>
+<label class="validation-object-option"><input type="checkbox" value="numeric_precision"> <span>Numeric precision and scale</span></label>
+<label class="validation-object-option"><input type="checkbox" value="salesforce_id_format"> <span>Salesforce ID format</span></label>
+<label id="validation-salesforce-id-length-label">Accepted Salesforce ID length<select id="validation-salesforce-id-length" class="fh-input" disabled><option value="15_or_18">15 or 18 characters (recommended)</option><option value="18">18 characters only</option><option value="15">15 characters only</option></select><small id="validation-salesforce-id-length-hint">Select “Salesforce ID format” to enable this choice.</small></label>
+<label class="validation-object-option"><input type="checkbox" value="contact_formats"> <span>Email, phone and URL formats</span></label>
+</div><small>Unselected checks are recorded as “Skipped by user”, not passed.</small>
+</fieldset>
+<label class="ff-policy-checkbox pre-option"><input id="validation-bypass-confirm" type="checkbox"><span>Allow validation bypass<small>Not recommended. Original files will be staged without schema, value, lookup, or target-reference validation. The bypass is recorded in run history.</small></span></label>
+<label class="ff-policy-checkbox post-option"><input id="validation-print-soql" type="checkbox"><span>Print generated SOQL<small>Include target queries in the validation log.</small></span></label>
+<div><div class="pipeline-canvas-title validation-object-title">Objects</div><div id="validation-objects" class="validation-object-grid"></div></div>
+</div>
+<div class="ff-action-row"><button id="validation-run-button" class="btn btn-primary">Run Validation</button><button id="validation-bypass-stage" class="btn btn-secondary pre-option" disabled>Bypass & Stage</button><button id="validation-bypass-pipeline" class="btn btn-secondary pre-option" disabled>Bypass, Stage & Add to Pipeline</button><a id="validation-progress-link" class="btn btn-secondary nav-btn" hidden>Open Pipeline Run</a><a href="/pipeline/logs" target="_blank" class="btn btn-secondary nav-btn">Open Logs</a></div>
+</section></main>
+<div id="validation-loader" class="designer-launch-loader" hidden role="status" aria-live="assertive">
+  <div class="designer-launch-loader-card">
+    <div class="designer-launch-spinner" aria-hidden="true"></div>
+    <strong id="validation-loader-title">Starting validation...</strong>
+    <span id="validation-loader-detail">Please wait.</span>
+  </div>
+</div>
+<script src="/static/validation.js?v=35"></script></body></html>

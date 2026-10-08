@@ -1,0 +1,31 @@
+{
+  "audit_date": "2026-07-31",
+  "target_metadata_source": "live target Salesforce Describe and default Record Type picklist metadata",
+  "insert_objects": 13,
+  "insert_rows": 1300,
+  "scalar_cells_checked": 83900,
+  "date_time_cells_checked": 10000,
+  "required_field_cells_checked": 900,
+  "lookup_cells_checked": 23700,
+  "issues_found": 0,
+  "contract_semantic_recheck": {
+    "rows": 100,
+    "clean": 100,
+    "rejected": 0,
+    "status": "Draft"
+  },
+  "checks": [
+    "required field mappings and blank values",
+    "date, datetime, and time formats",
+    "numeric precision and scale",
+    "text lengths",
+    "globally restricted picklists",
+    "default Record Type picklist availability",
+    "dependent picklist controller combinations",
+    "migration-specific semantic policies, including draft-only Contract insertion",
+    "direct target Salesforce ID membership",
+    "existing target external-ID membership",
+    "new group Legacy_ID__c lookup membership"
+  ],
+  "historical_failure_note": "Files under validationFailed were produced from the earlier generator version and are retained as historical evidence. They do not represent the regenerated 01_insert_files data."
+}

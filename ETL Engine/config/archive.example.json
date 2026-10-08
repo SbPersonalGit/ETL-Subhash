@@ -1,0 +1,7 @@
+{
+  "active_root": "runtime/active",
+  "archive_root": "runtime/archive",
+  "restore_root": "runtime/restore",
+  "package_staging_root": "runtime/package_staging",
+  "previous_archive_roots": []
+}

@@ -1,0 +1,2133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relationship Viewer</title>
+  <style>
+    :root {
+      --text: #1f2937;
+      --muted: #6b7280;
+      --panel: #ffffff;
+      --border: #d1d5db;
+      --accent: #0f766e;
+      --accent-soft: #ecfeff;
+      --node-bg: #e2e8f0;
+      --node-border: #ef4444;
+      --line: #334155;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      color: var(--text);
+    }
+
+    .wrap { max-width: none; width: calc(100vw - 28px); margin: 18px auto; padding: 0 14px 20px; }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      margin-bottom: 12px;
+    }
+
+    h1, h2 { margin: 0 0 8px; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 18px; }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.1fr 220px 1fr 1fr 1fr 1fr 130px;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .path-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 140px 140px;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, button, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .status { margin-top: 10px; font-size: 13px; color: var(--muted); }
+    .summary { margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+
+    details.cycle-panel {
+      margin-bottom: 14px;
+      border: 1px solid #fecaca;
+      background: #fff7f7;
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .cycle-panel-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .cycle-panel-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cycle-panel-summary::before {
+      content: '▸';
+      color: #991b1b;
+      font-size: 16px;
+      margin-right: 8px;
+      transform: translateY(-1px);
+    }
+
+    details[open].cycle-panel .cycle-panel-summary::before {
+      content: '▾';
+    }
+
+    .cycle-summary-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .cycle-panel-body {
+      padding: 0 14px 14px;
+    }
+
+    .cycle-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #991b1b;
+    }
+
+    .cycle-count {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid #fecaca;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cycle-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .cycle-card {
+      border: 1px solid #fecaca;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .cycle-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #7f1d1d;
+    }
+
+    .cycle-subtitle {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .cycle-members {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .cycle-member {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .cycle-reason-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #374151;
+      font-size: 13px;
+    }
+
+    .cycle-reason-list li + li {
+      margin-top: 6px;
+    }
+
+    .cycle-section-label {
+      margin: 10px 0 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #7f1d1d;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .cycle-loop-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .cycle-loop-item {
+      border: 1px solid #fecaca;
+      background: #fff5f5;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .cycle-loop-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #991b1b;
+      margin-bottom: 4px;
+    }
+
+    .cycle-loop-meta {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .cycle-object-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .cycle-object-item {
+      border: 1px solid #fee2e2;
+      background: #fffafa;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .cycle-object-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #991b1b;
+      margin-bottom: 4px;
+    }
+
+    .cycle-object-meta {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .cycle-inline-note {
+      margin: 8px 0 10px;
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #7f1d1d;
+    }
+
+    .cycle-inline-note strong {
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .cycle-inline-note .cycle-mini-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .cycle-inline-note .cycle-mini-detail {
+      line-height: 1.5;
+    }
+
+    .chip.cycle {
+      color: #991b1b;
+      background: #fee2e2;
+      border-color: #fecaca;
+    }
+
+    .path-result-box {
+      margin-top: 12px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .path-text {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .path-text.ok { color: #0f766e; }
+    .path-text.warn { color: var(--warn); }
+    .path-text.bad { color: var(--bad); }
+
+    .path-sequence {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .path-pill {
+      background: var(--accent-soft);
+      border: 1px solid #99f6e4;
+      color: #0f766e;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .path-arrow {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .path-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .trees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 12px;
+    }
+
+    .tree-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      min-height: 220px;
+    }
+
+    .tree-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+      border-radius: 8px;
+    }
+
+    .node-ellipse {
+      fill: #f8fafc;
+      stroke: #1f2937;
+      stroke-width: 1.8;
+      cursor: pointer;
+    }
+
+    .edge-path {
+      fill: none;
+      stroke: #1f2937;
+      stroke-width: 1.6;
+    }
+
+    .node-label {
+      fill: #1f2937;
+      font-size: 24px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+
+    .dim { opacity: 0.18; }
+    .active { opacity: 1 !important; }
+
+    .active.node-ellipse {
+      stroke: #0f766e;
+      stroke-width: 2.6;
+      fill: #ecfeff;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 6px;
+    }
+
+    .small-btn {
+      padding: 4px 9px;
+      font-size: 12px;
+      width: auto;
+    }
+
+    .chip {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 11px;
+      color: #0f766e;
+      background: #ecfeff;
+      border: 1px solid #99f6e4;
+      border-radius: 999px;
+      padding: 1px 7px;
+      vertical-align: middle;
+    }
+
+    
+
+    .lineage-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .lineage-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      min-height: 180px;
+    }
+
+    .lineage-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 12px;
+    }
+
+    .stat-pill {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #334155;
+    }
+
+    .lineage-path-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 0;
+      border-top: 1px dashed #dbe4ee;
+    }
+
+    .lineage-path-row:first-of-type { border-top: 0; }
+
+    .level-badge {
+      min-width: 62px;
+      text-align: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f766e;
+      background: #ecfeff;
+      border: 1px solid #99f6e4;
+    }
+
+    .lineage-node {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1.6px solid #1f2937;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .lineage-node.base {
+      border-color: #0f766e;
+      background: #ecfeff;
+      font-weight: 700;
+    }
+
+    .lineage-arrow {
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .empty-note {
+      color: #64748b;
+      font-size: 13px;
+      padding: 10px 0;
+    }
+
+    .diagram-wrap {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .diagram-canvas {
+      overflow: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fff;
+      max-height: 78vh;
+      width: 100%;
+      min-width: 100%;
+    }
+
+    .diagram-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .diagram-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: 8px 0 10px;
+    }
+
+    .diagram-svg {
+      display: block;
+      min-width: 100%;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+      border-radius: 8px;
+    }
+
+    .diagram-box {
+      fill: #fff;
+      stroke: #1f2937;
+      stroke-width: 1.8;
+      rx: 10;
+      ry: 10;
+    }
+
+    .diagram-box.base {
+      fill: #f6d7b8;
+      stroke: #8a5b21;
+      stroke-width: 2.2;
+    }
+
+    .diagram-label {
+      fill: #1f2937;
+      font-size: 13px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+
+    .diagram-edge {
+      fill: none;
+      stroke: #1f2937;
+      stroke-width: 2;
+    }
+
+    .diagram-divider {
+      stroke: #d97706;
+      stroke-width: 1.8;
+      stroke-dasharray: 4 4;
+    }
+
+    .diagram-axis {
+      stroke: #15803d;
+      stroke-width: 2.5;
+    }
+
+    .diagram-axis-text {
+      fill: #1f2937;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .lineage-panel { grid-template-columns: 1fr; }
+      .controls, .path-controls { grid-template-columns: 1fr; }
+      .trees-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>Relationship Viewer</h1>
+      <div class="muted">Switch between <b>Child → Parent</b>, <b>Parent → Child</b>, <b>Base Object Lineage</b>, and <b>Base Object Diagram</b>. The diagram view shows a simplified upward/downward hierarchy from one base object and caps height/depth at 10 levels.</div>
+      <div class="muted" style="margin-top: 8px;">
+        <b>Tree graph scope:</b> The generated hierarchy ignores non-createable reference fields,
+        audit fields (<code>CreatedById</code>, <code>LastModifiedById</code>), ownership fields
+        (<code>OwnerId</code>), references targeting <code>User</code>, polymorphic references,
+        and objects without a usable REST describe resource. Polymorphic relationships are
+        excluded only from hierarchy ordering and should be resolved separately during the
+        migration's deferred lookup pass. In the <code>ObjectHierarchy</code> sheet,
+        <code>RecordLookupCount</code> counts relationships used by this graph,
+        <code>RecordLookups</code> lists them, and
+        <code>OtherLookups</code> lists external or deferred relationships with the reason.
+        Migration analytics provide dependency waves, parent/child impact, foundation status,
+        cycle-aware phases, deferred-lookup counts, parallel batches, and risk ratings.
+      </div>
+      <div class="controls">
+        <input id="fileInput" type="file" accept=".xlsx,.xls" />
+        <select id="viewMode">
+          <option value="child_parent">View: Child → Parent</option>
+          <option value="parent_child">View: Parent → Child</option>
+          <option value="lineage">View: Base Object Lineage</option>
+          <option value="lineage_diagram">View: Base Object Diagram</option>
+        </select>
+        <input id="sheetName" type="text" value="ParentIdMappings" placeholder="Sheet name" />
+        <input id="baseObject" list="nodeList" type="text" placeholder="Base object for lineage view" />
+        <input id="searchText" type="text" placeholder="Search child/parent" />
+        <select id="sortBy">
+          <option value="alpha">Sort: Alphabetical</option>
+          <option value="child_desc">Sort: Link Count (High-Low)</option>
+          <option value="child_asc">Sort: Link Count (Low-High)</option>
+        </select>
+        <button id="renderBtn">Render</button>
+      </div>
+      <div id="status" class="status">Waiting for file...</div>
+    </div>
+
+    <div class="panel">
+      <h2>Find path between two nodes</h2>
+      <div class="muted">Select any two nodes. The viewer finds the shortest relationship path using the ParentIdMappings graph and shows the intermediate nodes visually.</div>
+      <div class="path-controls">
+        <div class="field">
+          <label for="fromNode">From node</label>
+          <input id="fromNode" list="nodeList" type="text" placeholder="Example: Passenger__c" />
+        </div>
+        <div class="field">
+          <label for="toNode">To node</label>
+          <input id="toNode" list="nodeList" type="text" placeholder="Example: Itinerary__c" />
+        </div>
+        <button id="findPathBtn">Show Path</button>
+        <button id="clearPathBtn" class="secondary">Clear</button>
+      </div>
+      <datalist id="nodeList"></datalist>
+      <div id="pathResult" class="path-result-box">
+        <div class="path-text warn">Load the workbook first, then choose two nodes.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="summary" class="summary"></div>
+      <div id="cycleSummary"></div>
+      <div id="trees" class="trees-grid"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const sheetNameInput = document.getElementById('sheetName');
+    const viewModeSelect = document.getElementById('viewMode');
+    const searchTextInput = document.getElementById('searchText');
+    const sortBySelect = document.getElementById('sortBy');
+    const renderBtn = document.getElementById('renderBtn');
+    const statusEl = document.getElementById('status');
+    const summaryEl = document.getElementById('summary');
+    const cycleSummaryEl = document.getElementById('cycleSummary');
+    const treesEl = document.getElementById('trees');
+    const fromNodeInput = document.getElementById('fromNode');
+    const toNodeInput = document.getElementById('toNode');
+    const findPathBtn = document.getElementById('findPathBtn');
+    const clearPathBtn = document.getElementById('clearPathBtn');
+    const pathResultEl = document.getElementById('pathResult');
+    const nodeListEl = document.getElementById('nodeList');
+    const baseObjectInput = document.getElementById('baseObject');
+
+    let latestParentMap = new Map();
+    let latestParentToChildrenMap = new Map();
+    let latestGraph = new Map();
+    let latestAllNodes = new Set();
+    let latestCycleInfo = new Map();
+    let latestCycleGroups = [];
+
+    function status(msg) { statusEl.textContent = msg; }
+
+    function normalizeNodeName(value) {
+      return String(value || '').trim();
+    }
+
+    function extractPairs(rows) {
+      const pairs = [];
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i] || [];
+        const a = normalizeNodeName(row[0]);
+        const b = normalizeNodeName(row[1]);
+        if (!a || !b) continue;
+
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+        const headerLike = (aLower === 'parentobject' && bLower === 'objectname') ||
+                           (aLower === 'objectname' && bLower === 'parentobject');
+        if (i === 0 && headerLike) continue;
+
+        pairs.push([a, b]);
+      }
+      return pairs;
+    }
+
+    function normalizeHeader(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function rowsToObjects(rows) {
+      if (!rows.length) return [];
+      const headers = (rows[0] || []).map(normalizeHeader);
+      const objects = [];
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i] || [];
+        if (!row.some(cell => normalizeNodeName(cell))) continue;
+        const entry = {};
+        headers.forEach((header, index) => {
+          if (!header) return;
+          entry[header] = row[index];
+        });
+        objects.push(entry);
+      }
+      return objects;
+    }
+
+    function parseMappings(rows) {
+      const records = rowsToObjects(rows);
+      return records
+        .map(record => ({
+          child: normalizeNodeName(record.objectname),
+          parent: normalizeNodeName(record.parentobject),
+          field: normalizeNodeName(record.parentidfield)
+        }))
+        .filter(record => record.child && record.parent);
+    }
+
+    function parseCycleMetadata(rows, mappings) {
+      const records = rowsToObjects(rows);
+      const cycleRows = records.filter(record => String(record.iscyclegroup || '').trim().toLowerCase() === 'yes');
+      const infoMap = new Map();
+      const groupMap = new Map();
+
+      cycleRows.forEach(record => {
+        const objectName = normalizeNodeName(record.objectname);
+        if (!objectName) return;
+        const rawMembers = normalizeNodeName(record.groupmembers);
+        const members = rawMembers
+          ? rawMembers.split(',').map(part => normalizeNodeName(part)).filter(Boolean)
+          : [objectName];
+        const uniqueMembers = Array.from(new Set([objectName, ...members])).sort((a, b) => a.localeCompare(b));
+        const groupKey = uniqueMembers.join('|');
+        if (!groupMap.has(groupKey)) {
+          groupMap.set(groupKey, {
+            key: groupKey,
+            order: record.grouporder,
+            members: uniqueMembers,
+            objects: new Set(),
+            edges: []
+          });
+        }
+        groupMap.get(groupKey).objects.add(objectName);
+      });
+
+      for (const group of groupMap.values()) {
+        const memberSet = new Set(group.members);
+        const edges = mappings.filter(mapping => memberSet.has(mapping.child) && memberSet.has(mapping.parent));
+        group.edges = edges.sort((a, b) => {
+          const left = `${a.child}|${a.parent}|${a.field}`;
+          const right = `${b.child}|${b.parent}|${b.field}`;
+          return left.localeCompare(right);
+        });
+        group.members.forEach(member => {
+          const objectEdges = group.edges.filter(edge => edge.child === member || edge.parent === member);
+          infoMap.set(member, {
+            objectName: member,
+            groupKey: group.key,
+            groupOrder: group.order,
+            groupMembers: group.members,
+            edges: objectEdges,
+            cycleEdges: group.edges
+          });
+        });
+      }
+
+      const groups = Array.from(groupMap.values()).sort((a, b) => {
+        const left = String(a.order ?? '');
+        const right = String(b.order ?? '');
+        return left.localeCompare(right) || a.key.localeCompare(b.key);
+      });
+
+      return { infoMap, groups };
+    }
+
+    function formatCycleEdge(edge) {
+      return `${edge.child} -> ${edge.parent} via ${edge.field || '(unknown field)'}`;
+    }
+
+    function findDirectCyclePairs(edges) {
+      const forwardMap = new Map();
+      edges.forEach(edge => {
+        const key = `${edge.child}|${edge.parent}`;
+        if (!forwardMap.has(key)) forwardMap.set(key, []);
+        forwardMap.get(key).push(edge);
+      });
+
+      const seen = new Set();
+      const pairs = [];
+      edges.forEach(edge => {
+        const reverseKey = `${edge.parent}|${edge.child}`;
+        const reverseEdges = forwardMap.get(reverseKey) || [];
+        if (!reverseEdges.length) return;
+        const pairKey = [edge.child, edge.parent].sort((a, b) => a.localeCompare(b)).join('|');
+        if (seen.has(pairKey)) return;
+        seen.add(pairKey);
+        pairs.push({
+          objects: [edge.child, edge.parent].sort((a, b) => a.localeCompare(b)),
+          forward: (forwardMap.get(`${edge.child}|${edge.parent}`) || []).slice().sort((a, b) => formatCycleEdge(a).localeCompare(formatCycleEdge(b))),
+          reverse: reverseEdges.slice().sort((a, b) => formatCycleEdge(a).localeCompare(formatCycleEdge(b)))
+        });
+      });
+
+      return pairs.sort((a, b) => a.objects.join('|').localeCompare(b.objects.join('|')));
+    }
+
+    function buildCycleExplanation(objectName) {
+      const info = latestCycleInfo.get(objectName);
+      if (!info) return null;
+      const directPairs = findDirectCyclePairs(info.cycleEdges).filter(pair => pair.objects.includes(objectName));
+      const outgoing = info.cycleEdges.filter(edge => edge.child === objectName).map(formatCycleEdge);
+      const incoming = info.cycleEdges.filter(edge => edge.parent === objectName).map(formatCycleEdge);
+      return {
+        title: `${objectName} is part of a cyclic group`,
+        members: info.groupMembers,
+        directPairs,
+        outgoing,
+        incoming
+      };
+    }
+
+    function renderCycleSummary() {
+      cycleSummaryEl.innerHTML = '';
+      if (!latestCycleGroups.length) return;
+
+      const panel = document.createElement('details');
+      panel.className = 'cycle-panel';
+      panel.open = false;
+
+      const titleRow = document.createElement('summary');
+      titleRow.className = 'cycle-panel-summary';
+      const titleMain = document.createElement('div');
+      titleMain.className = 'cycle-summary-main';
+      const title = document.createElement('div');
+      title.className = 'cycle-title';
+      title.textContent = 'Cyclic Objects';
+      const count = document.createElement('span');
+      count.className = 'cycle-count';
+      count.textContent = `${latestCycleInfo.size} object${latestCycleInfo.size !== 1 ? 's' : ''} in ${latestCycleGroups.length} cycle group${latestCycleGroups.length !== 1 ? 's' : ''}`;
+      titleMain.appendChild(title);
+      titleRow.appendChild(titleMain);
+      titleRow.appendChild(count);
+      panel.appendChild(titleRow);
+
+      const body = document.createElement('div');
+      body.className = 'cycle-panel-body';
+      const help = document.createElement('div');
+      help.className = 'muted';
+      help.textContent = 'Collapsed by default. Open this section to see the exact closed loops first, then the supporting in-group links from ParentIdMappings.';
+      body.appendChild(help);
+
+      const list = document.createElement('div');
+      list.className = 'cycle-list';
+
+      latestCycleGroups.forEach(group => {
+        const card = document.createElement('div');
+        card.className = 'cycle-card';
+        const heading = document.createElement('h3');
+        heading.textContent = `Group ${group.order ?? '-'}: ${group.members.join(', ')}`;
+        card.appendChild(heading);
+
+        const subtitle = document.createElement('div');
+        subtitle.className = 'cycle-subtitle';
+        subtitle.textContent = 'Why this group is cyclic';
+        card.appendChild(subtitle);
+
+        const memberRow = document.createElement('div');
+        memberRow.className = 'cycle-members';
+        group.members.forEach(member => {
+          const chip = document.createElement('span');
+          chip.className = 'cycle-member';
+          chip.textContent = member;
+          memberRow.appendChild(chip);
+        });
+        card.appendChild(memberRow);
+
+        const directPairs = findDirectCyclePairs(group.edges);
+        const loopLabel = document.createElement('div');
+        loopLabel.className = 'cycle-section-label';
+        loopLabel.textContent = 'Closed Loops';
+        card.appendChild(loopLabel);
+
+        if (directPairs.length) {
+          const loopList = document.createElement('div');
+          loopList.className = 'cycle-loop-list';
+          directPairs.forEach(pair => {
+            const item = document.createElement('div');
+            item.className = 'cycle-loop-item';
+            const loopTitle = document.createElement('div');
+            loopTitle.className = 'cycle-loop-title';
+            loopTitle.textContent = `${pair.objects[0]} <-> ${pair.objects[1]}`;
+            item.appendChild(loopTitle);
+            const loopMeta = document.createElement('div');
+            loopMeta.className = 'cycle-loop-meta';
+            loopMeta.innerHTML = `${pair.forward.map(formatCycleEdge).join('<br>')}${pair.reverse.length ? '<br>' + pair.reverse.map(formatCycleEdge).join('<br>') : ''}`;
+            item.appendChild(loopMeta);
+            loopList.appendChild(item);
+          });
+          card.appendChild(loopList);
+        } else {
+          const emptyLoops = document.createElement('div');
+          emptyLoops.className = 'muted';
+          emptyLoops.textContent = 'No direct two-way loop was found. See the in-group links below.';
+          card.appendChild(emptyLoops);
+        }
+
+        const objectLabel = document.createElement('div');
+        objectLabel.className = 'cycle-section-label';
+        objectLabel.textContent = 'Object By Object';
+        card.appendChild(objectLabel);
+
+        const objectGrid = document.createElement('div');
+        objectGrid.className = 'cycle-object-grid';
+        group.members.forEach(member => {
+          const memberInfo = latestCycleInfo.get(member);
+          const objectItem = document.createElement('div');
+          objectItem.className = 'cycle-object-item';
+          const objectName = document.createElement('div');
+          objectName.className = 'cycle-object-name';
+          objectName.textContent = member;
+          objectItem.appendChild(objectName);
+          const objectMeta = document.createElement('div');
+          objectMeta.className = 'cycle-object-meta';
+          const outgoing = (memberInfo?.cycleEdges || []).filter(edge => edge.child === member).map(formatCycleEdge);
+          const incoming = (memberInfo?.cycleEdges || []).filter(edge => edge.parent === member).map(formatCycleEdge);
+          objectMeta.innerHTML = `Outgoing: ${outgoing.length ? outgoing.join('<br>') : 'none'}<br>Incoming: ${incoming.length ? incoming.join('<br>') : 'none'}`;
+          objectItem.appendChild(objectMeta);
+          objectGrid.appendChild(objectItem);
+        });
+        card.appendChild(objectGrid);
+
+        const reasonLabel = document.createElement('div');
+        reasonLabel.className = 'cycle-section-label';
+        reasonLabel.textContent = 'All In-Group Links';
+        card.appendChild(reasonLabel);
+
+        const reasonList = document.createElement('ul');
+        reasonList.className = 'cycle-reason-list';
+        const reasons = group.edges.length
+          ? group.edges.map(formatCycleEdge)
+          : ['No matching ParentIdMappings rows were found between members of this cycle group.'];
+        reasons.forEach(reason => {
+          const item = document.createElement('li');
+          item.textContent = reason;
+          reasonList.appendChild(item);
+        });
+        card.appendChild(reasonList);
+        list.appendChild(card);
+      });
+
+      body.appendChild(list);
+      panel.appendChild(body);
+      cycleSummaryEl.appendChild(panel);
+    }
+
+    function buildChildParentMap(pairs) {
+      const map = new Map();
+      for (const [child, parent] of pairs) {
+        if (!map.has(child)) map.set(child, new Set());
+        map.get(child).add(parent);
+      }
+      return map;
+    }
+
+
+    function buildParentChildMap(childParentMap) {
+      const map = new Map();
+      for (const [child, parents] of childParentMap.entries()) {
+        for (const parent of parents) {
+          if (!map.has(parent)) map.set(parent, new Set());
+          map.get(parent).add(child);
+        }
+      }
+      return map;
+    }
+
+    function buildUndirectedGraph(childParentMap) {
+      const graph = new Map();
+      const addEdge = (a, b) => {
+        if (!graph.has(a)) graph.set(a, new Set());
+        if (!graph.has(b)) graph.set(b, new Set());
+        graph.get(a).add(b);
+        graph.get(b).add(a);
+      };
+
+      for (const [child, parents] of childParentMap.entries()) {
+        if (!graph.has(child)) graph.set(child, new Set());
+        for (const parent of parents) addEdge(child, parent);
+      }
+      return graph;
+    }
+
+    function populateNodeList(graph) {
+      nodeListEl.innerHTML = '';
+      Array.from(graph.keys()).sort((a, b) => a.localeCompare(b)).forEach(node => {
+        const option = document.createElement('option');
+        option.value = node;
+        nodeListEl.appendChild(option);
+      });
+    }
+
+    function svgEl(tag, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+      return el;
+    }
+
+    function textLabel(svg, x, y, text, cls = 'node-label', lines = null) {
+      const label = svgEl('text', { x, y, class: cls });
+      appendWrappedSvgText(label, text, 16, 3, lines);
+      const t = svgEl('title');
+      t.textContent = text;
+      label.appendChild(t);
+      svg.appendChild(label);
+      return label;
+    }
+
+    function splitLabelIntoLines(text, maxCharsPerLine = 16, maxLines = 3) {
+      const raw = String(text || '').trim();
+      if (!raw) return [''];
+
+      const tokens = raw
+        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+        .replace(/__/g, '__ ')
+        .replace(/_/g, '_ ')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      const lines = [];
+      let current = '';
+
+      const pushCurrent = () => {
+        if (current) {
+          lines.push(current.trim());
+          current = '';
+        }
+      };
+
+      tokens.forEach(token => {
+        if (lines.length >= maxLines) return;
+        if (token.length > maxCharsPerLine) {
+          pushCurrent();
+          let remainder = token;
+          while (remainder.length > maxCharsPerLine && lines.length < maxLines) {
+            lines.push(remainder.slice(0, maxCharsPerLine));
+            remainder = remainder.slice(maxCharsPerLine);
+          }
+          current = remainder;
+          return;
+        }
+        const candidate = current ? `${current} ${token}` : token;
+        if (candidate.length <= maxCharsPerLine) {
+          current = candidate;
+        } else {
+          pushCurrent();
+          current = token;
+        }
+      });
+
+      pushCurrent();
+
+      if (lines.length > maxLines) {
+        lines.length = maxLines;
+      }
+      if (lines.length === maxLines && tokens.length) {
+        const reconstructed = lines.join(' ');
+        if (reconstructed.replace(/\s+/g, '') !== raw.replace(/\s+/g, '')) {
+          lines[maxLines - 1] = `${lines[maxLines - 1].slice(0, Math.max(0, maxCharsPerLine - 2)).trim()}..`;
+        }
+      }
+      return lines;
+    }
+
+    function getWrappedNodeLabelSpec(text, maxCharsPerLine = 16, maxLines = 3) {
+      const lines = splitLabelIntoLines(text, maxCharsPerLine, maxLines);
+      const longestLine = lines.reduce((max, line) => Math.max(max, line.length), 0);
+      return {
+        lines,
+        rx: Math.max(95, Math.min(150, 48 + longestLine * 5.2)),
+        ry: Math.max(30, 20 + lines.length * 12),
+      };
+    }
+
+    function appendWrappedSvgText(label, text, maxCharsPerLine = 16, maxLines = 3, precomputedLines = null) {
+      const lines = precomputedLines || splitLabelIntoLines(text, maxCharsPerLine, maxLines);
+      const lineHeight = label.classList.contains('diagram-label') ? 14 : 24;
+      const startDy = -((lines.length - 1) * lineHeight) / 2;
+
+      lines.forEach((line, index) => {
+        const span = svgEl('tspan', {
+          x: label.getAttribute('x'),
+          dy: index === 0 ? startDy : lineHeight,
+        });
+        span.textContent = line;
+        label.appendChild(span);
+      });
+    }
+
+    function drawChildParentTreeSvg(child, parents) {
+      const W = 760;
+      const leftX = 120;
+      const midX = 300;
+      const rightX = 610;
+      const topPad = 44;
+      const step = 96;
+      const parentCount = parents.length;
+      const H = Math.max(210, topPad * 2 + (parentCount - 1) * step + 20);
+      const centerY = H / 2;
+
+      const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'tree-svg' });
+      const layerEdges = svgEl('g');
+      const layerNodes = svgEl('g');
+      const layerLabels = svgEl('g');
+      svg.appendChild(layerEdges);
+      svg.appendChild(layerNodes);
+      svg.appendChild(layerLabels);
+
+      const defs = svgEl('defs');
+      const markerId = `arrow_${Math.random().toString(36).slice(2, 9)}`;
+      const marker = svgEl('marker', {
+        id: markerId, markerWidth: 10, markerHeight: 8, refX: 9, refY: 4, orient: 'auto', markerUnits: 'strokeWidth'
+      });
+      marker.appendChild(svgEl('path', { d: 'M 0 0 L 10 4 L 0 8 z', fill: '#1f2937' }));
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+
+      const hiddenParents = new Set();
+      let focused = null;
+
+      function clearLayer(layer) {
+        while (layer.firstChild) layer.removeChild(layer.firstChild);
+      }
+
+      function renderScene() {
+        clearLayer(layerEdges);
+        clearLayer(layerNodes);
+        clearLayer(layerLabels);
+
+        const childSpec = getWrappedNodeLabelSpec(child);
+        const visibleParents = parents.filter(p => !hiddenParents.has(p));
+        const count = visibleParents.length;
+        if (!count) {
+          const childOnly = svgEl('ellipse', { cx: leftX, cy: centerY, rx: childSpec.rx, ry: childSpec.ry, class: 'node-ellipse active' });
+          layerNodes.appendChild(childOnly);
+          textLabel(layerLabels, leftX, centerY, child, 'node-label', childSpec.lines);
+          return;
+        }
+
+        const fy = centerY - ((count - 1) * step) / 2;
+        const parentY = new Map(visibleParents.map((p, i) => [p, fy + i * step]));
+        const isActiveParent = (p) => focused && focused.type === 'parent' && focused.name === p;
+        const childActive = focused && focused.type === 'child';
+
+        const startLine = svgEl('line', { x1: leftX + childSpec.rx, y1: centerY, x2: midX, y2: centerY, class: 'edge-path' });
+        if (focused && !childActive && focused.type !== 'parent') startLine.classList.add('dim');
+        layerEdges.appendChild(startLine);
+
+        if (count > 1) {
+          const trunk = svgEl('line', { x1: midX, y1: fy, x2: midX, y2: fy + (count - 1) * step, class: 'edge-path' });
+          layerEdges.appendChild(trunk);
+        }
+
+        visibleParents.forEach((p) => {
+          const py = parentY.get(p);
+          const parentSpec = getWrappedNodeLabelSpec(p);
+          const line = svgEl('path', { d: `M ${midX} ${py} H ${rightX - parentSpec.rx}`, class: 'edge-path', 'marker-end': `url(#${markerId})` });
+          if (focused && !childActive && !isActiveParent(p)) line.classList.add('dim');
+          if (childActive || isActiveParent(p)) line.classList.add('active');
+          layerEdges.appendChild(line);
+
+          const pe = svgEl('ellipse', { cx: rightX, cy: py, rx: parentSpec.rx, ry: parentSpec.ry, class: 'node-ellipse' });
+          if (focused && !childActive && !isActiveParent(p)) pe.classList.add('dim');
+          if (childActive || isActiveParent(p)) pe.classList.add('active');
+          pe.addEventListener('click', (evt) => {
+            if (evt.shiftKey) {
+              if (hiddenParents.has(p)) hiddenParents.delete(p); else hiddenParents.add(p);
+              renderScene();
+              return;
+            }
+            focused = (focused && focused.type === 'parent' && focused.name === p) ? null : { type: 'parent', name: p };
+            renderScene();
+          });
+          layerNodes.appendChild(pe);
+
+          const tl = textLabel(layerLabels, rightX, py, p, 'node-label', parentSpec.lines);
+          if (focused && !childActive && !isActiveParent(p)) tl.classList.add('dim');
+          if (childActive || isActiveParent(p)) tl.classList.add('active');
+        });
+
+        const childEl = svgEl('ellipse', { cx: leftX, cy: centerY, rx: childSpec.rx, ry: childSpec.ry, class: 'node-ellipse' });
+        if (childActive || (focused && focused.type === 'parent')) childEl.classList.add('active');
+        childEl.addEventListener('click', (evt) => {
+          if (evt.shiftKey) return;
+          focused = (focused && focused.type === 'child') ? null : { type: 'child', name: child };
+          renderScene();
+        });
+        layerNodes.appendChild(childEl);
+        const cl = textLabel(layerLabels, leftX, centerY, child, 'node-label', childSpec.lines);
+        if (childActive || (focused && focused.type === 'parent')) cl.classList.add('active');
+      }
+
+      renderScene();
+      svg._resetTreeState = () => {
+        hiddenParents.clear();
+        focused = null;
+        renderScene();
+      };
+      return svg;
+    }
+
+    function drawParentChildTreeSvg(parent, children) {
+      const W = 760;
+      const leftX = 150;
+      const midX = 340;
+      const rightX = 620;
+      const topPad = 44;
+      const step = 96;
+      const childCount = children.length;
+      const H = Math.max(210, topPad * 2 + (childCount - 1) * step + 20);
+      const centerY = H / 2;
+
+      const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'tree-svg' });
+      const layerEdges = svgEl('g');
+      const layerNodes = svgEl('g');
+      const layerLabels = svgEl('g');
+      svg.appendChild(layerEdges);
+      svg.appendChild(layerNodes);
+      svg.appendChild(layerLabels);
+
+      const defs = svgEl('defs');
+      const markerId = `arrow_${Math.random().toString(36).slice(2, 9)}`;
+      const marker = svgEl('marker', {
+        id: markerId, markerWidth: 10, markerHeight: 8, refX: 9, refY: 4, orient: 'auto', markerUnits: 'strokeWidth'
+      });
+      marker.appendChild(svgEl('path', { d: 'M 0 0 L 10 4 L 0 8 z', fill: '#1f2937' }));
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+
+      let focused = null;
+
+      function clearLayer(layer) {
+        while (layer.firstChild) layer.removeChild(layer.firstChild);
+      }
+
+      function renderScene() {
+        clearLayer(layerEdges);
+        clearLayer(layerNodes);
+        clearLayer(layerLabels);
+
+        const parentSpec = getWrappedNodeLabelSpec(parent);
+        const count = children.length;
+        const fy = centerY - ((count - 1) * step) / 2;
+        const childY = new Map(children.map((c, i) => [c, fy + i * step]));
+        const isActiveChild = (c) => focused && focused.type === 'child' && focused.name === c;
+        const parentActive = focused && focused.type === 'parent';
+
+        const startLine = svgEl('line', { x1: leftX + parentSpec.rx, y1: centerY, x2: midX, y2: centerY, class: 'edge-path' });
+        if (focused && !parentActive && focused.type !== 'child') startLine.classList.add('dim');
+        layerEdges.appendChild(startLine);
+
+        if (count > 1) {
+          const trunk = svgEl('line', { x1: midX, y1: fy, x2: midX, y2: fy + (count - 1) * step, class: 'edge-path' });
+          layerEdges.appendChild(trunk);
+        }
+
+        children.forEach((child) => {
+          const cy = childY.get(child);
+          const childSpec = getWrappedNodeLabelSpec(child);
+          const line = svgEl('path', { d: `M ${midX} ${cy} H ${rightX - childSpec.rx}`, class: 'edge-path', 'marker-end': `url(#${markerId})` });
+          if (focused && !parentActive && !isActiveChild(child)) line.classList.add('dim');
+          if (parentActive || isActiveChild(child)) line.classList.add('active');
+          layerEdges.appendChild(line);
+
+          const ce = svgEl('ellipse', { cx: rightX, cy, rx: childSpec.rx, ry: childSpec.ry, class: 'node-ellipse' });
+          if (focused && !parentActive && !isActiveChild(child)) ce.classList.add('dim');
+          if (parentActive || isActiveChild(child)) ce.classList.add('active');
+          ce.addEventListener('click', () => {
+            focused = (focused && focused.type === 'child' && focused.name === child) ? null : { type: 'child', name: child };
+            renderScene();
+          });
+          layerNodes.appendChild(ce);
+
+          const tl = textLabel(layerLabels, rightX, cy, child, 'node-label', childSpec.lines);
+          if (focused && !parentActive && !isActiveChild(child)) tl.classList.add('dim');
+          if (parentActive || isActiveChild(child)) tl.classList.add('active');
+        });
+
+        const parentEl = svgEl('ellipse', { cx: leftX, cy: centerY, rx: parentSpec.rx, ry: parentSpec.ry, class: 'node-ellipse' });
+        if (parentActive || (focused && focused.type === 'child')) parentEl.classList.add('active');
+        parentEl.addEventListener('click', () => {
+          focused = (focused && focused.type === 'parent') ? null : { type: 'parent', name: parent };
+          renderScene();
+        });
+        layerNodes.appendChild(parentEl);
+        const pl = textLabel(layerLabels, leftX, centerY, parent, 'node-label', parentSpec.lines);
+        if (parentActive || (focused && focused.type === 'child')) pl.classList.add('active');
+      }
+
+      renderScene();
+      svg._resetTreeState = () => {
+        focused = null;
+        renderScene();
+      };
+      return svg;
+    }
+
+    function renderTrees(childParentMap) {
+      treesEl.innerHTML = '';
+      const viewMode = viewModeSelect.value;
+      if (viewMode === 'lineage') {
+        renderLineageView();
+        return;
+      }
+      if (viewMode === 'lineage_diagram') {
+        renderLineageDiagramView();
+        return;
+      }
+      const activeMap = viewMode === 'parent_child' ? latestParentToChildrenMap : childParentMap;
+      const search = normalizeNodeName(searchTextInput.value).toLowerCase();
+      const sortBy = sortBySelect.value;
+      let roots = Array.from(activeMap.keys());
+
+      if (search) {
+        roots = roots.filter(root => {
+          const r = root.toLowerCase();
+          if (r.includes(search)) return true;
+          const related = Array.from(activeMap.get(root) || []);
+          return related.some(n => n.toLowerCase().includes(search));
+        });
+      }
+
+      if (sortBy === 'child_desc') {
+        roots.sort((a, b) => ((activeMap.get(b)?.size || 0) - (activeMap.get(a)?.size || 0)) || a.localeCompare(b));
+      } else if (sortBy === 'child_asc') {
+        roots.sort((a, b) => ((activeMap.get(a)?.size || 0) - (activeMap.get(b)?.size || 0)) || a.localeCompare(b));
+      } else {
+        roots.sort((a, b) => a.localeCompare(b));
+      }
+
+      if (!roots.length) {
+        treesEl.innerHTML = '<div class="muted">No trees match current filter.</div>';
+        summaryEl.textContent = '';
+        return;
+      }
+
+      let edgeCount = 0;
+      roots.forEach(root => { edgeCount += activeMap.get(root).size; });
+      summaryEl.textContent = viewMode === 'parent_child'
+        ? `Trees: ${roots.length} | Total Parent→Child links: ${edgeCount}`
+        : `Trees: ${roots.length} | Total Child→Parent links: ${edgeCount}`;
+
+      for (const root of roots) {
+        const related = Array.from(activeMap.get(root)).sort((a, b) => a.localeCompare(b));
+        const card = document.createElement('div');
+        card.className = 'tree-card';
+
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = viewMode === 'parent_child'
+          ? `${related.length} child` + (related.length !== 1 ? 'ren' : '')
+          : `${related.length} parent` + (related.length !== 1 ? 's' : '');
+        const title = document.createElement('div');
+        title.className = 'summary';
+        title.textContent = `${root} `;
+        title.appendChild(chip);
+        if (latestCycleInfo.has(root)) {
+          const cycleChip = document.createElement('span');
+          cycleChip.className = 'chip cycle';
+          cycleChip.textContent = 'cyclic';
+          title.appendChild(cycleChip);
+        }
+        card.appendChild(title);
+
+        const cycleDetails = buildCycleExplanation(root);
+        if (cycleDetails) {
+          const note = document.createElement('div');
+          note.className = 'cycle-inline-note';
+          const lines = [];
+          if (cycleDetails.directPairs.length) {
+            lines.push(`Direct loop${cycleDetails.directPairs.length !== 1 ? 's' : ''}: ${cycleDetails.directPairs.map(pair => `${pair.objects[0]} <-> ${pair.objects[1]}`).join(', ')}`);
+          }
+          if (cycleDetails.outgoing.length) {
+            lines.push(`Outgoing: ${cycleDetails.outgoing.slice(0, 2).join(' | ')}`);
+          }
+          if (cycleDetails.incoming.length) {
+            lines.push(`Incoming: ${cycleDetails.incoming.slice(0, 2).join(' | ')}`);
+          }
+          note.innerHTML = `<div class="cycle-mini-title">Cyclic group: ${cycleDetails.members.join(', ')}</div><div class="cycle-mini-detail">${lines.join('<br>')}</div>`;
+          card.appendChild(note);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'small-btn';
+        resetBtn.textContent = 'Reset';
+        actions.appendChild(resetBtn);
+        card.appendChild(actions);
+
+        const treeSvg = viewMode === 'parent_child'
+          ? drawParentChildTreeSvg(root, related)
+          : drawChildParentTreeSvg(root, related);
+        resetBtn.addEventListener('click', () => treeSvg._resetTreeState && treeSvg._resetTreeState());
+        card.appendChild(treeSvg);
+        treesEl.appendChild(card);
+      }
+    }
+
+
+
+    function collectAllNodes(childParentMap, parentChildMap) {
+      const nodes = new Set();
+      for (const [child, parents] of childParentMap.entries()) {
+        nodes.add(child);
+        for (const parent of parents) nodes.add(parent);
+      }
+      for (const [parent, children] of parentChildMap.entries()) {
+        nodes.add(parent);
+        for (const child of children) nodes.add(child);
+      }
+      return nodes;
+    }
+
+    function findDirectionalPaths(start, adjacencyMap, maxDepth = 12) {
+      const paths = [];
+      function dfs(node, path, visited) {
+        const nexts = Array.from(adjacencyMap.get(node) || []).sort((a, b) => a.localeCompare(b));
+        const validNexts = nexts.filter(next => !visited.has(next));
+        if (!validNexts.length || path.length - 1 >= maxDepth) {
+          paths.push([...path]);
+          return;
+        }
+        for (const next of validNexts) {
+          visited.add(next);
+          path.push(next);
+          dfs(next, path, visited);
+          path.pop();
+          visited.delete(next);
+        }
+      }
+      dfs(start, [start], new Set([start]));
+      return dedupePaths(paths).sort((a, b) => {
+        if (b.length !== a.length) return b.length - a.length;
+        return a.join('|').localeCompare(b.join('|'));
+      });
+    }
+
+    function dedupePaths(paths) {
+      const seen = new Set();
+      const out = [];
+      for (const path of paths) {
+        const key = path.join('>');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(path);
+      }
+      return out;
+    }
+
+    function renderPathRow(path, directionLabel, reverse = false) {
+      const row = document.createElement('div');
+      row.className = 'lineage-path-row';
+
+      const badge = document.createElement('span');
+      badge.className = 'level-badge';
+      badge.textContent = `${directionLabel} ${Math.max(0, path.length - 1)}`;
+      row.appendChild(badge);
+
+      const nodes = reverse ? [...path].reverse() : [...path];
+      nodes.forEach((node, index) => {
+        const pill = document.createElement('span');
+        pill.className = 'lineage-node' + (index === (reverse ? nodes.length - 1 : 0) ? ' base' : '');
+        pill.textContent = node;
+        row.appendChild(pill);
+        if (index < nodes.length - 1) {
+          const arrow = document.createElement('span');
+          arrow.className = 'lineage-arrow';
+          arrow.textContent = '→';
+          row.appendChild(arrow);
+        }
+      });
+      return row;
+    }
+
+    function renderLineageView() {
+      treesEl.innerHTML = '';
+      const base = normalizeNodeName(baseObjectInput.value);
+      if (!base) {
+        summaryEl.textContent = 'Lineage view: enter a base object to see linear upward and downward paths.';
+        treesEl.innerHTML = '<div class="muted">Choose a base object in the new field near the top. Example: Itinerary__c</div>';
+        return;
+      }
+      if (!latestAllNodes.has(base)) {
+        summaryEl.textContent = '';
+        treesEl.innerHTML = `<div class="muted">Base object not found: ${base}</div>`;
+        return;
+      }
+
+      const upwardPaths = findDirectionalPaths(base, latestParentMap);
+      const downwardPaths = findDirectionalPaths(base, latestParentToChildrenMap);
+      const upwardDepth = Math.max(0, ...upwardPaths.map(p => p.length - 1));
+      const downwardDepth = Math.max(0, ...downwardPaths.map(p => p.length - 1));
+      const uniqueAncestors = new Set(upwardPaths.flat().slice(1));
+      uniqueAncestors.delete(base);
+      const uniqueDescendants = new Set(downwardPaths.flat().slice(1));
+      uniqueDescendants.delete(base);
+
+      summaryEl.textContent = `Base Object: ${base} | Upward depth: ${upwardDepth} | Downward depth: ${downwardDepth} | Ancestor paths: ${upwardPaths.length} | Descendant paths: ${downwardPaths.length}`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'lineage-panel';
+
+      const upBox = document.createElement('div');
+      upBox.className = 'lineage-box';
+      upBox.innerHTML = `<div class="lineage-title">Upward lineage (Base → Parents)</div>`;
+      const upStats = document.createElement('div');
+      upStats.className = 'stats-row';
+      upStats.innerHTML = `<span class="stat-pill">Max depth: ${upwardDepth}</span><span class="stat-pill">Unique ancestors: ${uniqueAncestors.size}</span><span class="stat-pill">Paths: ${upwardPaths.length}</span>`;
+      upBox.appendChild(upStats);
+      if (upwardPaths.length === 1 && upwardPaths[0].length === 1) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-note';
+        empty.textContent = 'No parent lineage found from this base object.';
+        upBox.appendChild(empty);
+      } else {
+        upwardPaths.filter(p => p.length > 1).forEach(path => upBox.appendChild(renderPathRow(path, 'L')));
+      }
+
+      const downBox = document.createElement('div');
+      downBox.className = 'lineage-box';
+      downBox.innerHTML = `<div class="lineage-title">Downward lineage (Base → Children)</div>`;
+      const downStats = document.createElement('div');
+      downStats.className = 'stats-row';
+      downStats.innerHTML = `<span class="stat-pill">Max depth: ${downwardDepth}</span><span class="stat-pill">Unique descendants: ${uniqueDescendants.size}</span><span class="stat-pill">Paths: ${downwardPaths.length}</span>`;
+      downBox.appendChild(downStats);
+      if (downwardPaths.length === 1 && downwardPaths[0].length === 1) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-note';
+        empty.textContent = 'No child lineage found from this base object.';
+        downBox.appendChild(empty);
+      } else {
+        downwardPaths.filter(p => p.length > 1).forEach(path => downBox.appendChild(renderPathRow(path, 'L')));
+      }
+
+      wrap.appendChild(upBox);
+      wrap.appendChild(downBox);
+      treesEl.appendChild(wrap);
+    }
+
+
+    function buildDirectionalTree(root, adjacencyMap, maxDepth = 10) {
+      function walk(node, depth, pathSet) {
+        const treeNode = { name: node, children: [], depth };
+        if (depth >= maxDepth) return treeNode;
+
+        const nexts = Array.from(adjacencyMap.get(node) || []).sort((a, b) => a.localeCompare(b));
+        const seenUnderThisNode = new Set();
+
+        for (const next of nexts) {
+          if (pathSet.has(next)) continue; // cycle protection only within current branch
+          if (seenUnderThisNode.has(next)) continue; // defensive dedupe for same immediate parent
+          seenUnderThisNode.add(next);
+
+          const nextPath = new Set(pathSet);
+          nextPath.add(next);
+          treeNode.children.push(walk(next, depth + 1, nextPath));
+        }
+        return treeNode;
+      }
+
+      return walk(root, 0, new Set([root]));
+    }
+
+    function computeTreeLayout(root) {
+      const boxW = 132;
+      const boxH = 34;
+      const hGap = 18;
+      const vGap = 74;
+      let maxDepth = 0;
+
+      function measure(node) {
+        maxDepth = Math.max(maxDepth, node.depth);
+        if (!node.children.length) {
+          node.subtreeWidth = boxW;
+          return node.subtreeWidth;
+        }
+        let total = 0;
+        node.children.forEach((child, idx) => {
+          total += measure(child);
+          if (idx < node.children.length - 1) total += hGap;
+        });
+        node.subtreeWidth = Math.max(boxW, total);
+        return node.subtreeWidth;
+      }
+
+      function assign(node, left) {
+        node.x = left + node.subtreeWidth / 2;
+        node.y = node.depth * vGap;
+        let cursor = left;
+        node.children.forEach(child => {
+          assign(child, cursor);
+          cursor += child.subtreeWidth + hGap;
+        });
+      }
+
+      const totalWidth = measure(root);
+      assign(root, 0);
+      return { boxW, boxH, hGap, vGap, totalWidth, maxDepth };
+    }
+
+    function flattenTree(root) {
+      const nodes = [];
+      const edges = [];
+      function walk(node) {
+        nodes.push(node);
+        node.children.forEach(child => {
+          edges.push([node, child]);
+          walk(child);
+        });
+      }
+      walk(root);
+      return { nodes, edges };
+    }
+
+    function drawLineageDiagramSvg(base, upwardTree, downwardTree, upwardLayout, downwardLayout) {
+      const outerPadX = 160;
+      const outerPadY = 56;
+      const axisX = 54;
+      const axisLabelX = 26;
+      const topAreaH = (upwardLayout.maxDepth + 1) * upwardLayout.vGap;
+      const bottomAreaH = (downwardLayout.maxDepth + 1) * downwardLayout.vGap;
+      const dividerYRaw = outerPadY + topAreaH;
+
+      const upFlat = flattenTree(upwardTree);
+      const downFlat = flattenTree(downwardTree);
+
+      const rawCenterX = Math.max(upwardLayout.totalWidth, downwardLayout.totalWidth) / 2;
+      const upShiftXRaw = rawCenterX - upwardTree.x;
+      const downShiftXRaw = rawCenterX - downwardTree.x;
+
+      const nodeBoxes = [];
+
+      function collectNodeBounds(node, orientation) {
+        const boxW = orientation === 'up' ? upwardLayout.boxW : downwardLayout.boxW;
+        const boxH = orientation === 'up' ? upwardLayout.boxH : downwardLayout.boxH;
+        const cx = orientation === 'up' ? node.x + upShiftXRaw : node.x + downShiftXRaw;
+        const cy = orientation === 'up' ? dividerYRaw - node.y : dividerYRaw + node.y;
+        nodeBoxes.push({
+          left: cx - boxW / 2,
+          right: cx + boxW / 2,
+          top: cy - boxH / 2,
+          bottom: cy + boxH / 2
+        });
+      }
+
+      upFlat.nodes.forEach(node => collectNodeBounds(node, 'up'));
+      downFlat.nodes.forEach(node => { if (node.depth > 0) collectNodeBounds(node, 'down'); });
+
+      let minX = Math.min(axisLabelX - 18, ...nodeBoxes.map(b => b.left));
+      let maxX = Math.max(axisX + 12, ...nodeBoxes.map(b => b.right));
+      let minY = Math.min(24, ...nodeBoxes.map(b => b.top));
+      let maxY = Math.max(dividerYRaw + bottomAreaH + outerPadY, ...nodeBoxes.map(b => b.bottom));
+
+      minX -= outerPadX;
+      maxX += outerPadX;
+      minY -= outerPadY;
+      maxY += outerPadY;
+
+      const totalW = Math.max(1200, Math.ceil(maxX - minX));
+      const totalH = Math.max(700, Math.ceil(maxY - minY));
+      const offsetX = -minX;
+      const offsetY = -minY;
+      const dividerY = dividerYRaw + offsetY;
+      const centerX = rawCenterX + offsetX;
+      const upShiftX = upShiftXRaw + offsetX;
+      const downShiftX = downShiftXRaw + offsetX;
+
+      const svg = svgEl('svg', { viewBox: `0 0 ${totalW} ${totalH}`, width: totalW, height: totalH, class: 'diagram-svg' });
+      svg.style.width = totalW + 'px';
+      svg.style.height = totalH + 'px';
+      svg.dataset.centerX = String(centerX);
+      svg.dataset.centerY = String(dividerY);
+
+      const defs = svgEl('defs');
+      const upId = `up_${Math.random().toString(36).slice(2, 9)}`;
+      const downId = `down_${Math.random().toString(36).slice(2, 9)}`;
+      const makeMarker = (id, color) => {
+        const m = svgEl('marker', { id, markerWidth: 10, markerHeight: 8, refX: 9, refY: 4, orient: 'auto', markerUnits: 'strokeWidth' });
+        m.appendChild(svgEl('path', { d: 'M 0 0 L 10 4 L 0 8 z', fill: color }));
+        return m;
+      };
+      defs.appendChild(makeMarker(upId, '#1f2937'));
+      defs.appendChild(makeMarker(downId, '#1f2937'));
+      svg.appendChild(defs);
+
+      const axis = svgEl('line', { x1: axisX + offsetX, y1: 26 + offsetY, x2: axisX + offsetX, y2: totalH - 36, class: 'diagram-axis', 'marker-start': `url(#${upId})`, 'marker-end': `url(#${downId})` });
+      svg.appendChild(axis);
+      const heightTextY = Math.max(90 + offsetY, dividerY - 120);
+      const heightText = svgEl('text', { x: axisLabelX + offsetX, y: heightTextY, class: 'diagram-axis-text', transform: `rotate(-90 ${axisLabelX + offsetX} ${heightTextY})` });
+      heightText.textContent = 'Height';
+      svg.appendChild(heightText);
+      const depthTextY = Math.min(totalH - 90, dividerY + 120);
+      const depthText = svgEl('text', { x: axisLabelX + offsetX, y: depthTextY, class: 'diagram-axis-text', transform: `rotate(-90 ${axisLabelX + offsetX} ${depthTextY})` });
+      depthText.textContent = 'Depth';
+      svg.appendChild(depthText);
+
+      const divider = svgEl('line', { x1: axisX + 12 + offsetX, y1: dividerY, x2: totalW - 20, y2: dividerY, class: 'diagram-divider' });
+      svg.appendChild(divider);
+
+      function drawEdge(parent, child, orientation) {
+        const boxW = orientation === 'up' ? upwardLayout.boxW : downwardLayout.boxW;
+        const boxH = orientation === 'up' ? upwardLayout.boxH : downwardLayout.boxH;
+        const sx = orientation === 'up' ? parent.x + upShiftX : parent.x + downShiftX;
+        const tx = orientation === 'up' ? child.x + upShiftX : child.x + downShiftX;
+        const sy = orientation === 'up' ? dividerY - parent.y - boxH / 2 : dividerY + parent.y + boxH / 2;
+        const ty = orientation === 'up' ? dividerY - child.y + boxH / 2 : dividerY + child.y - boxH / 2;
+        const midY = sy + (ty - sy) / 2;
+        const d = `M ${sx} ${sy} V ${midY} H ${tx} V ${ty}`;
+        const path = svgEl('path', { d, class: 'diagram-edge', 'marker-end': orientation === 'up' ? `url(#${upId})` : `url(#${downId})` });
+        svg.appendChild(path);
+      }
+
+      upFlat.edges.forEach(([p, c]) => drawEdge(p, c, 'up'));
+      downFlat.edges.forEach(([p, c]) => drawEdge(p, c, 'down'));
+
+      function drawNode(node, orientation) {
+        const boxW = orientation === 'up' ? upwardLayout.boxW : downwardLayout.boxW;
+        const boxH = orientation === 'up' ? upwardLayout.boxH : downwardLayout.boxH;
+        const x = (orientation === 'up' ? node.x + upShiftX : node.x + downShiftX) - boxW / 2;
+        const y = orientation === 'up' ? dividerY - node.y - boxH / 2 : dividerY + node.y - boxH / 2;
+        const rect = svgEl('rect', { x, y, width: boxW, height: boxH, class: 'diagram-box' + (node.depth === 0 ? ' base' : '') });
+        svg.appendChild(rect);
+        const label = svgEl('text', { x: x + boxW / 2, y: y + boxH / 2, class: 'diagram-label' });
+        appendWrappedSvgText(label, node.name, 18, 3);
+        const t = svgEl('title');
+        t.textContent = node.name;
+        label.appendChild(t);
+        svg.appendChild(label);
+      }
+
+      upFlat.nodes.forEach(node => drawNode(node, 'up'));
+      downFlat.nodes.forEach(node => { if (node.depth > 0) drawNode(node, 'down'); });
+
+      return svg;
+    }
+
+    function countUniqueNodesInTree(root) {
+      const s = new Set();
+      (function walk(n){ s.add(n.name + '|' + n.depth + '|' + Math.random()); n.children.forEach(walk); })(root);
+      return s.size;
+    }
+
+    function countDistinctNames(root) {
+      const s = new Set();
+      (function walk(n){ s.add(n.name); n.children.forEach(walk); })(root);
+      return s.size;
+    }
+
+    function downloadSvgAsPng(svg, fileName) {
+      const serializer = new XMLSerializer();
+      const svgClone = svg.cloneNode(true);
+      svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+      const svgText = serializer.serializeToString(svgClone);
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+
+      img.onload = () => {
+        const width = Number(svg.getAttribute('width')) || svg.viewBox.baseVal.width || 1600;
+        const height = Number(svg.getAttribute('height')) || svg.viewBox.baseVal.height || 900;
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob((pngBlob) => {
+          if (!pngBlob) {
+            alert('Unable to generate image.');
+            return;
+          }
+          const pngUrl = URL.createObjectURL(pngBlob);
+          const a = document.createElement('a');
+          a.href = pngUrl;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(pngUrl), 1000);
+        }, 'image/png');
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        alert('Unable to generate image from the current diagram.');
+      };
+
+      img.src = url;
+    }
+
+    function renderLineageDiagramView() {
+      treesEl.innerHTML = '';
+      const base = normalizeNodeName(baseObjectInput.value);
+      if (!base) {
+        summaryEl.textContent = 'Base Object Diagram: enter a base object to see simplified upward and downward hierarchy.';
+        treesEl.innerHTML = '<div class="muted">Choose a base object in the field near the top. Example: Itinerary__c</div>';
+        return;
+      }
+      if (!latestAllNodes.has(base)) {
+        summaryEl.textContent = '';
+        treesEl.innerHTML = `<div class="muted">Base object not found: ${base}</div>`;
+        return;
+      }
+
+      const limit = 10;
+      const upwardTree = buildDirectionalTree(base, latestParentMap, limit);
+      const downwardTree = buildDirectionalTree(base, latestParentToChildrenMap, limit);
+      const upwardLayout = computeTreeLayout(upwardTree);
+      const downwardLayout = computeTreeLayout(downwardTree);
+      const upNames = countDistinctNames(upwardTree) - 1;
+      const downNames = countDistinctNames(downwardTree) - 1;
+      summaryEl.textContent = `Base Object: ${base} | Max upward height: ${upwardLayout.maxDepth} | Max downward depth: ${downwardLayout.maxDepth} | Level limit: ${limit}`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'diagram-wrap';
+      wrap.style.gridColumn = '1 / -1';
+      wrap.style.width = '100%';
+      const title = document.createElement('div');
+      title.className = 'diagram-title';
+      title.textContent = 'Simplified hierarchy diagram (inter-relationships suppressed, max 10 levels)';
+      wrap.appendChild(title);
+
+      const stats = document.createElement('div');
+      stats.className = 'stats-row';
+      stats.innerHTML = `<span class="stat-pill">Unique upward objects: ${Math.max(0, upNames)}</span><span class="stat-pill">Unique downward objects: ${Math.max(0, downNames)}</span><span class="stat-pill">Upward levels: ${upwardLayout.maxDepth}</span><span class="stat-pill">Downward levels: ${downwardLayout.maxDepth}</span>`;
+      wrap.appendChild(stats);
+      const note = document.createElement('div');
+      note.className = 'muted';
+      note.style.marginBottom = '10px';
+      note.textContent = 'Updated view: same object can appear under different parents when the relationship is real; only cyclic loops inside the same branch are suppressed. Extra canvas padding is added so left and right edges are fully reachable.';
+      wrap.appendChild(note);
+      const actions = document.createElement('div');
+      actions.className = 'diagram-actions';
+      const downloadBtn = document.createElement('button');
+      downloadBtn.className = 'secondary';
+      downloadBtn.style.width = 'auto';
+      downloadBtn.textContent = 'Download Diagram as PNG';
+      actions.appendChild(downloadBtn);
+      wrap.appendChild(actions);
+
+      const canvas = document.createElement('div');
+      canvas.className = 'diagram-canvas';
+      const diagramSvg = drawLineageDiagramSvg(base, upwardTree, downwardTree, upwardLayout, downwardLayout);
+      canvas.appendChild(diagramSvg);
+      downloadBtn.addEventListener('click', () => downloadSvgAsPng(diagramSvg, `${base.replace(/[^a-z0-9_-]+/gi, '_')}_base_object_diagram.png`));
+      requestAnimationFrame(() => {
+        const desiredX = Math.max(0, Number(diagramSvg.dataset.centerX || 0) - canvas.clientWidth / 2);
+        const desiredY = Math.max(0, Number(diagramSvg.dataset.centerY || 0) - canvas.clientHeight / 2);
+        canvas.scrollLeft = desiredX;
+        canvas.scrollTop = desiredY;
+      });
+      wrap.appendChild(canvas);
+      treesEl.appendChild(wrap);
+    }
+
+    function rerenderFromCurrentData() {
+      if (!latestParentMap.size) return;
+      renderTrees(latestParentMap);
+    }
+
+    function findShortestPath(graph, start, end) {
+      if (!graph.has(start) || !graph.has(end)) return null;
+      if (start === end) return [start];
+
+      const queue = [start];
+      const visited = new Set([start]);
+      const prev = new Map();
+
+      while (queue.length) {
+        const current = queue.shift();
+        const neighbors = Array.from(graph.get(current) || []).sort((a, b) => a.localeCompare(b));
+        for (const next of neighbors) {
+          if (visited.has(next)) continue;
+          visited.add(next);
+          prev.set(next, current);
+          if (next === end) {
+            const path = [end];
+            let node = end;
+            while (prev.has(node)) {
+              node = prev.get(node);
+              path.push(node);
+            }
+            return path.reverse();
+          }
+          queue.push(next);
+        }
+      }
+      return null;
+    }
+
+    function drawPathSvg(path) {
+      const stepX = 220;
+      const marginX = 120;
+      const W = Math.max(760, marginX * 2 + (path.length - 1) * stepX);
+      const H = 220;
+      const cy = H / 2;
+      const rx = 95;
+      const ry = 30;
+      const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'path-svg' });
+
+      const defs = svgEl('defs');
+      const markerId = `path_arrow_${Math.random().toString(36).slice(2, 9)}`;
+      const marker = svgEl('marker', {
+        id: markerId, markerWidth: 10, markerHeight: 8, refX: 9, refY: 4, orient: 'auto', markerUnits: 'strokeWidth'
+      });
+      marker.appendChild(svgEl('path', { d: 'M 0 0 L 10 4 L 0 8 z', fill: '#0f766e' }));
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+
+      path.forEach((node, index) => {
+        const x = marginX + index * stepX;
+        if (index < path.length - 1) {
+          const line = svgEl('line', {
+            x1: x + rx, y1: cy, x2: x + stepX - rx, y2: cy,
+            stroke: '#0f766e', 'stroke-width': 3, 'marker-end': `url(#${markerId})`
+          });
+          svg.appendChild(line);
+        }
+
+        const ellipse = svgEl('ellipse', {
+          cx: x, cy, rx, ry, fill: '#ecfeff', stroke: '#0f766e', 'stroke-width': 2.6
+        });
+        svg.appendChild(ellipse);
+
+        const label = svgEl('text', {
+          x, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: '#1f2937', 'font-size': 24
+        });
+        label.textContent = node.length > 22 ? node.slice(0, 20) + '..' : node;
+        const t = svgEl('title');
+        t.textContent = node;
+        label.appendChild(t);
+        svg.appendChild(label);
+      });
+
+      return svg;
+    }
+
+    function renderPathResult(type, message, path = null) {
+      pathResultEl.innerHTML = '';
+      const text = document.createElement('div');
+      text.className = `path-text ${type}`;
+      text.textContent = message;
+      pathResultEl.appendChild(text);
+
+      if (path && path.length) {
+        const sequence = document.createElement('div');
+        sequence.className = 'path-sequence';
+        path.forEach((node, index) => {
+          const pill = document.createElement('span');
+          pill.className = 'path-pill';
+          pill.textContent = node;
+          sequence.appendChild(pill);
+          if (index < path.length - 1) {
+            const arrow = document.createElement('span');
+            arrow.className = 'path-arrow';
+            arrow.textContent = '→';
+            sequence.appendChild(arrow);
+          }
+        });
+        pathResultEl.appendChild(sequence);
+        pathResultEl.appendChild(drawPathSvg(path));
+      }
+    }
+
+    function handleFindPath() {
+      if (!latestGraph.size) {
+        renderPathResult('warn', 'Load the workbook first, then choose two nodes.');
+        return;
+      }
+
+      const fromNode = normalizeNodeName(fromNodeInput.value);
+      const toNode = normalizeNodeName(toNodeInput.value);
+
+      if (!fromNode || !toNode) {
+        renderPathResult('warn', 'Please select both nodes.');
+        return;
+      }
+
+      const missing = [fromNode, toNode].filter(node => !latestGraph.has(node));
+      if (missing.length === 2) {
+        renderPathResult('bad', `Both nodes were not found in the graph: ${fromNode}, ${toNode}.`);
+        return;
+      }
+      if (missing.length === 1) {
+        renderPathResult('bad', `Node not found in the graph: ${missing[0]}.`);
+        return;
+      }
+
+      const path = findShortestPath(latestGraph, fromNode, toNode);
+      if (!path) {
+        renderPathResult('bad', `No direct relation path found between ${fromNode} and ${toNode}.`);
+        return;
+      }
+
+      const hopCount = Math.max(0, path.length - 1);
+      const middleNodes = Math.max(0, path.length - 2);
+      const msg = hopCount === 0
+        ? `${fromNode} and ${toNode} are the same node.`
+        : `Path found: ${hopCount} link${hopCount !== 1 ? 's' : ''}${middleNodes ? ` with ${middleNodes} intermediate node${middleNodes !== 1 ? 's' : ''}` : ''}.`;
+      renderPathResult('ok', msg, path);
+    }
+
+    async function parseWorkbook(file) {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = sheetNameInput.value.trim();
+      if (!workbook.SheetNames.includes(sheetName)) {
+        throw new Error(`Sheet '${sheetName}' not found. Available: ${workbook.SheetNames.join(', ')}`);
+      }
+      const activeSheet = workbook.Sheets[sheetName];
+      const hierarchySheet = workbook.Sheets['ObjectHierarchy'];
+      return {
+        relationshipRows: XLSX.utils.sheet_to_json(activeSheet, { header: 1, defval: '' }),
+        hierarchyRows: hierarchySheet ? XLSX.utils.sheet_to_json(hierarchySheet, { header: 1, defval: '' }) : [],
+        workbook
+      };
+    }
+
+    renderBtn.addEventListener('click', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        status('Please select an .xlsx file first.');
+        return;
+      }
+      try {
+        status('Reading workbook...');
+        const parsed = await parseWorkbook(file);
+        const pairs = extractPairs(parsed.relationshipRows);
+        const mappings = parseMappings(parsed.relationshipRows);
+        const childParentMap = buildChildParentMap(pairs);
+        const cycleData = parseCycleMetadata(parsed.hierarchyRows, mappings);
+        latestParentMap = childParentMap;
+        latestParentToChildrenMap = buildParentChildMap(childParentMap);
+        latestGraph = buildUndirectedGraph(childParentMap);
+        latestAllNodes = collectAllNodes(childParentMap, latestParentToChildrenMap);
+        latestCycleInfo = cycleData.infoMap;
+        latestCycleGroups = cycleData.groups;
+        populateNodeList(latestGraph);
+        if (!baseObjectInput.value && latestAllNodes.has("Itinerary__c")) baseObjectInput.value = "Itinerary__c";
+        renderCycleSummary();
+        renderTrees(childParentMap);
+        renderPathResult('warn', 'Workbook loaded. Select any two nodes and click Show Path.');
+        status(`Rendered successfully from ${sheetNameInput.value.trim()} with cycle metadata from ObjectHierarchy.`);
+      } catch (err) {
+        treesEl.innerHTML = '';
+        summaryEl.textContent = '';
+        cycleSummaryEl.innerHTML = '';
+        latestParentMap = new Map();
+        latestParentToChildrenMap = new Map();
+        latestGraph = new Map();
+        latestAllNodes = new Set();
+        latestCycleInfo = new Map();
+        latestCycleGroups = [];
+        nodeListEl.innerHTML = '';
+        renderPathResult('bad', `Error: ${err.message}`);
+        status(`Error: ${err.message}`);
+      }
+    });
+
+    findPathBtn.addEventListener('click', handleFindPath);
+    clearPathBtn.addEventListener('click', () => {
+      fromNodeInput.value = '';
+      toNodeInput.value = '';
+      renderPathResult('warn', latestGraph.size ? 'Selection cleared. Choose two nodes to find a path.' : 'Load the workbook first, then choose two nodes.');
+    });
+
+    searchTextInput.addEventListener('input', rerenderFromCurrentData);
+    sortBySelect.addEventListener('change', rerenderFromCurrentData);
+    viewModeSelect.addEventListener('change', rerenderFromCurrentData);
+    baseObjectInput.addEventListener('input', () => { if (viewModeSelect.value === 'lineage') rerenderFromCurrentData(); });
+  </script>
+</body>
+</html>

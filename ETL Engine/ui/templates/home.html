@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift</title>
+  <link rel="stylesheet" href="/static/style.css?v=10" />
+  <style>
+    body.home-page { height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; display: block; }
+    .home-shell { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+    .home-hero { margin-bottom: 28px; }
+    .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .home-card { background: var(--panel, #0f172a); border: 1px solid var(--border, #243041); border-radius: 16px; padding: 20px; display: grid; gap: 12px; }
+    .home-card h2 { margin: 0; font-size: 1.05rem; }
+    .home-card p { margin: 0; color: var(--text-dim, #94a3b8); line-height: 1.5; }
+    .home-card .ff-action-row { margin-top: 6px; }
+  </style>
+</head>
+<body class="home-page">
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="logo brand-logo" href="/workspace" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+    <span class="subtitle">Migration Workspace</span>
+  </div>
+  <div class="topbar-center">
+    <div class="auth-status ok"><span class="dot"></span> Choose a migration entry point</div>
+  </div>
+  <div class="topbar-right">
+    <a href="/" class="btn btn-secondary nav-btn">Setup</a>
+    <a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a>
+    <a href="/validation?phase=pre" class="btn btn-secondary nav-btn">Validation Center</a>
+    <a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a>
+    <a href="/storage" class="btn btn-secondary nav-btn">Storage Health</a>
+    <a href="/general-utility" class="btn btn-secondary nav-btn">General Utility</a>
+  </div>
+</header>
+
+<main class="home-shell">
+  <section class="home-hero">
+    <h1>Choose your migration flow</h1>
+    <p>Use dedicated entry pages for Source Org extraction or Flat File migration, then continue in the shared validation and pipeline tooling.</p>
+  </section>
+
+  <section class="home-grid">
+    <article class="home-card">
+      <h2>Source Org Migration</h2>
+      <p>Build a source-to-target template from Salesforce metadata and topology, then extract at runtime using the shared ETL engine.</p>
+      <div class="ff-action-row">
+        <a href="/source-org" class="btn btn-primary nav-btn">Open Source Org Migration</a>
+      </div>
+    </article>
+
+    <article class="home-card">
+      <h2>Flat File Migration</h2>
+      <p>Prepare CSV packages, validate mappings and quality, then stage them into the shared ETL engine for migration.</p>
+      <div class="ff-action-row">
+        <a href="/flat-files" class="btn btn-primary nav-btn">Open Flat File Migration</a>
+      </div>
+    </article>
+
+    <article class="home-card">
+      <h2>Shared Operations</h2>
+      <p>Validation Center, Pipeline Designer, and Pipeline Runs stay common across both migration products.</p>
+      <div class="ff-action-row">
+        <a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a>
+        <a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a>
+      </div>
+    </article>
+
+    <article class="home-card">
+      <h2>General Utility</h2>
+      <p>Prepare migration CSVs, preserve reference IDs, apply verified fallbacks, build JSON legacy columns, and create supporting Target Org fields.</p>
+      <div class="ff-action-row">
+        <a href="/general-utility" class="btn btn-primary nav-btn">Open General Utility</a>
+      </div>
+    </article>
+
+    <article class="home-card">
+      <h2>Storage Health</h2>
+      <p>Check local disk usage from validation CSVs, upload batches, DuckDB files, exports, and logs — then clean safe items to free space.</p>
+      <div class="ff-action-row">
+        <a href="/storage" class="btn btn-primary nav-btn">Open Storage Health</a>
+      </div>
+    </article>
+  </section>
+</main>
+</body>
+</html>

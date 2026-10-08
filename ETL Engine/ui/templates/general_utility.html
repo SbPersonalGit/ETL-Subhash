@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - General Utility</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=11" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='general_utility.css') }}?v=6" />
+</head>
+<body class="gu-page">
+<header class="topbar">
+  <div class="topbar-left"><a class="logo brand-logo" href="/"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">General Utility</span></div>
+  <div class="topbar-center"><div id="gu-auth" class="auth-status checking"><span class="dot"></span> Checking target org...</div></div>
+  <div class="topbar-right"><a href="/" class="btn btn-secondary nav-btn">Home</a><a href="/flat-files" class="btn btn-secondary nav-btn">Flat File Migration</a></div>
+</header>
+<main class="gu-shell">
+  <section class="gu-card">
+    <h1>Prepare CSV data for migration</h1>
+    <p>Select an existing CSV from <code>state/flat_file_drop</code>. Analysis finds populated reference fields using live Target Org metadata; no CSV or Salesforce changes occur during analysis.</p>
+    <div class="gu-grid gu-grid-4">
+      <label>Source CSV<select id="gu-file" class="fh-input"><option value="">Select a state-folder CSV</option></select></label>
+      <label>Target object<select id="gu-object" class="fh-input"><option value="">Select object</option></select></label>
+      <label>Target profile<select id="gu-profile" class="fh-input"></select></label>
+      <label>Legacy prefix<input id="gu-prefix" class="fh-input" value="Legacy_" /></label>
+    </div>
+    <div class="ff-action-row"><button id="gu-refresh" class="btn btn-secondary">Refresh files and metadata</button><button id="gu-analyze" class="btn btn-primary">Analyze CSV</button></div>
+    <div id="gu-message" class="gu-message" aria-live="polite"></div>
+  </section>
+
+  <section id="gu-results" hidden>
+    <div class="gu-summary" id="gu-summary"></div>
+
+    <section class="gu-card">
+      <div class="gu-heading"><div><h2>1. Column and Salesforce field creation utility</h2><p>Preserve reference, auto-number, or selected custom-field values in new columns and build JSON concatenation columns. CSV preparation and Target Org metadata creation are independent actions.</p></div><span class="gu-badge">Separate output</span></div>
+      <h3>Field preservation columns</h3>
+      <div class="gu-grid gu-grid-4">
+        <label>Search fields<input id="gu-preserve-filter" class="fh-input" type="search" placeholder="Field API name" /></label>
+        <label>Salesforce data type<select id="gu-preserve-type" class="fh-input"><option value="">All data types</option></select></label>
+        <label>Show<select id="gu-preserve-view" class="fh-input"><option value="all">All fields</option><option value="populated">Populated only</option><option value="selected">Selected for preservation</option><option value="match">Create Match selected</option></select></label>
+        <label>Match field suffix<input id="gu-match-suffix" class="fh-input" value="Match" placeholder="Match" /></label>
+      </div>
+      <p id="gu-preserve-count" class="gu-help"></p>
+      <p class="gu-help">Completely blank source columns are excluded to prevent unnecessary Legacy field creation.</p>
+      <p class="gu-help">A Match formula field is created only when its Create Match checkbox is selected. Unchecking Preserve also clears Create Match. Unchecked Match controls remain blank and are excluded from deployment.</p>
+      <p class="gu-help">By default, only Lookup and Master-Detail fields are selected. User/Owner, RecordTypeId, ProfileId, and auto-number fields stay unchecked unless you choose them.</p>
+      <div class="gu-table-wrap"><table class="gu-table"><thead><tr><th>Preserve</th><th>Source field</th><th>Referenced object</th><th>New Legacy field</th><th>Target status</th><th>Create Match</th><th>Match formula field</th><th>Checkbox formula</th><th>Individual description</th></tr></thead><tbody id="gu-preserve-body"></tbody></table></div>
+      <h3>JSON concatenation column</h3>
+      <div class="gu-grid gu-grid-3">
+        <label>New field API name<input id="gu-concat-name" class="fh-input" placeholder="Legacy_Validation_Context__c" /></label>
+        <div class="gu-span-2 gu-column-picker">
+          <label>Columns to concatenate <span id="gu-concat-count" class="gu-help"></span><input id="gu-concat-filter" class="fh-input" type="search" placeholder="Search any CSV column" /></label>
+          <div class="ff-action-row"><button id="gu-concat-select-all" class="btn btn-secondary" type="button">Select all visible</button><button id="gu-concat-clear" class="btn btn-secondary" type="button">Clear selection</button></div>
+          <div id="gu-concat-columns" class="gu-checkbox-list"></div>
+        </div>
+        <label class="gu-span-2">Concatenation field description<textarea id="gu-concat-description" class="fh-input" rows="2" placeholder="Uses common description when blank"></textarea></label>
+      </div>
+      <p class="gu-help">The value is stored as a JSON object, for example <code>{"ColumnA":"value","ColumnB":"value"}</code>. Its Salesforce type is Long Text Area.</p>
+      <h3>Field description and permissions</h3>
+      <div class="gu-grid gu-grid-3">
+        <label class="gu-span-2">Common description<textarea id="gu-description" class="fh-input" rows="3">{{ default_field_description }}</textarea></label>
+        <div class="gu-access-selectors">
+          <label>Permission Sets<select id="gu-permission-sets" class="fh-input gu-multi" multiple size="6"></select></label>
+          <label>Profiles<select id="gu-profiles" class="fh-input gu-multi" multiple size="6"></select></label>
+        </div>
+      </div>
+      <div class="gu-notice warning">Creating fields changes the selected Target Org. Review the object, field names, descriptions, Permission Sets, and Profiles before clicking the metadata button.</div>
+      <div class="ff-action-row"><button id="gu-prepare-columns" class="btn btn-primary">Prepare CSV columns</button><button id="gu-create-fields" class="btn btn-danger">Create missing fields and grant access</button></div>
+      <section id="gu-field-progress" class="gu-progress-panel" hidden aria-live="polite">
+        <div class="gu-progress-heading"><div class="gu-spinner" aria-hidden="true"></div><div><strong id="gu-progress-title">Starting metadata operation...</strong><div id="gu-progress-elapsed" class="gu-help">Elapsed: 0s</div></div><strong id="gu-progress-percent">0%</strong></div>
+        <div class="gu-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="gu-progress-bar" class="gu-progress-bar"></div></div>
+        <ol id="gu-progress-events" class="gu-progress-events"></ol>
+      </section>
+      <div id="gu-column-result" class="gu-result" hidden></div>
+    </section>
+
+    <details class="gu-card gu-collapsible">
+      <summary><div><h2>2. Fallback ID utility</h2><p>Replace only populated reference values that are absent from a confirmed local inventory or from the Target Org. Blank and valid values remain unchanged.</p></div><span class="gu-badge">Expand</span></summary>
+      <div class="gu-collapsible-body">
+        <div class="gu-grid gu-grid-3">
+          <label>Inventory source<select id="gu-inventory-mode" class="fh-input"><option value="local">Local state-folder inventory CSVs</option><option value="target">Search Target Org</option></select></label>
+          <label>Target external-ID field<input id="gu-external-id" class="fh-input" value="External_Id__c" /></label>
+        </div>
+        <div class="gu-table-wrap"><table class="gu-table"><thead><tr><th>Use</th><th>Reference column</th><th>Referenced object</th><th>Populated</th><th>Preserve original as</th><th>Fallback ID</th><th>Local inventory</th></tr></thead><tbody id="gu-fallback-body"></tbody></table></div>
+        <div class="gu-notice">Target search is read-only. Local mode requires an inventory CSV containing <code>External_Id__c</code> for every selected referenced object.</div>
+        <div class="ff-action-row"><button id="gu-run-fallback" class="btn btn-primary">Prepare fallback CSV</button></div>
+        <div id="gu-fallback-result" class="gu-result" hidden></div>
+      </div>
+    </details>
+  </section>
+
+  <details class="gu-card gu-collapsible">
+    <summary>
+      <div>
+        <h2>3. Bulk FLS assignment</h2>
+        <p>Grant object, field, and record-type access on the connected Target Org for every object listed in a local file. Editable fields receive edit access; non-editable fields receive read access. This utility does not require CSV analysis.</p>
+      </div>
+      <span class="gu-badge">Expand</span>
+    </summary>
+    <div class="gu-collapsible-body">
+      <div class="gu-grid gu-grid-3">
+        <label class="gu-span-2">Object list file path<input id="gu-fls-object-list" class="fh-input" type="text" placeholder="C:\path\to\objects.csv or objects.txt" /></label>
+        <label>Target profile<select id="gu-fls-profile" class="fh-input"></select></label>
+      </div>
+      <div class="gu-access-selectors">
+        <label>Permission Sets<select id="gu-fls-permission-sets" class="fh-input gu-multi" multiple size="8"></select></label>
+        <label>Profiles<select id="gu-fls-profiles" class="fh-input gu-multi" multiple size="8"></select></label>
+      </div>
+      <p class="gu-help">Object list format: one API name per line, or a CSV with an <code>Object</code> column. Permission Sets and Profiles are loaded from the selected Target profile connection.</p>
+      <div class="gu-notice warning">This updates ObjectPermissions, FieldPermissions, and Record Type visibility in the Target Org. Review the selected principals before running.</div>
+      <div class="ff-action-row">
+        <button id="gu-fls-refresh" class="btn btn-secondary" type="button">Refresh Permission Sets / Profiles</button>
+        <button id="gu-fls-run" class="btn btn-danger" type="button">Assign FLS and record types</button>
+      </div>
+      <section id="gu-fls-progress" class="gu-progress-panel" hidden aria-live="polite">
+        <div class="gu-progress-heading"><div class="gu-spinner" aria-hidden="true"></div><div><strong id="gu-fls-progress-title">Starting bulk FLS...</strong><div id="gu-fls-progress-elapsed" class="gu-help">Elapsed: 0s</div></div><strong id="gu-fls-progress-percent">0%</strong></div>
+        <div class="gu-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="gu-fls-progress-bar" class="gu-progress-bar"></div></div>
+        <ol id="gu-fls-progress-events" class="gu-progress-events"></ol>
+      </section>
+      <div id="gu-fls-result" class="gu-result" hidden></div>
+    </div>
+  </details>
+</main>
+<script src="{{ url_for('static', filename='general_utility.js') }}?v=19"></script>
+</body>
+</html>

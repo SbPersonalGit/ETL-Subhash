@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - Storage Health</title>
+  <link rel="stylesheet" href="/static/style.css?v=21" />
+</head>
+<body class="pipeline-page pipeline-runs-page storage-health-page">
+<div id="storage-loader" class="designer-launch-loader" role="status" aria-live="polite" aria-label="Loading Storage Health">
+  <div class="designer-launch-loader-card">
+    <div class="designer-launch-spinner" aria-hidden="true"></div>
+    <strong id="storage-loader-title">Scanning storage...</strong>
+    <span id="storage-loader-detail">Calculating template, run, validation, and archive sizes. Large workspaces may take a moment.</span>
+    <span id="storage-loader-elapsed">Elapsed: 0s</span>
+    <small>Please keep this page open while the operation is running.</small>
+  </div>
+</div>
+<header class="topbar pipeline-topbar">
+  <div class="topbar-left">
+    <a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+    <span class="subtitle">Storage Health</span>
+  </div>
+  <div class="topbar-center">
+    <div id="storage-banner" class="auth-status checking"><span class="dot"></span> Scanning local disk usage...</div>
+  </div>
+  <div class="topbar-right">
+    <button id="storage-refresh" class="btn btn-secondary" type="button">Refresh</button>
+    <button id="storage-review" class="btn btn-secondary" type="button" disabled>Review impact</button>
+    <button id="storage-bypass-review" class="btn btn-secondary" type="button" disabled>Bypass review</button>
+    <button id="storage-archive" class="btn btn-secondary" type="button" disabled>Archive selected</button>
+    <button id="storage-bypass-archive" class="btn btn-secondary" type="button" disabled>Bypass archive</button>
+    <button id="storage-cleanup" class="btn btn-primary" type="button" disabled>Clean selected</button>
+    <a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a>
+    <a href="/" class="btn btn-secondary nav-btn">Home</a>
+  </div>
+</header>
+
+<main class="run-progress-layout storage-layout">
+  <section class="pipeline-canvas run-progress-summary">
+    <div class="pipeline-canvas-header storage-header">
+      <div>
+        <div class="pipeline-canvas-title">Clean by template</div>
+        <div class="pipeline-canvas-subtitle">Pick the templates you created. Related run files, validation reports, and uploads are grouped underneath. Saved templates and drop-folder source files stay unless you delete the template itself later.</div>
+      </div>
+    </div>
+
+    <div class="storage-summary-grid" id="storage-summary"></div>
+    <div id="storage-backup" class="storage-backup-panel"></div>
+    <div class="storage-category-grid" id="storage-categories"></div>
+
+    <div class="storage-filter-bar">
+      <select id="storage-eligibility-filter" class="fh-input" aria-label="Filter templates">
+        <option value="">All templates</option>
+        <option value="allowed">Has files that can be cleaned</option>
+        <option value="protected">Nothing to clean yet</option>
+      </select>
+      <input id="storage-search" class="object-search storage-search-input" type="search" placeholder="Search template, pipeline, or object" />
+      <div id="storage-filter-count" class="storage-filter-count">Showing 0 of 0 template(s)</div>
+    </div>
+
+    <div id="storage-impact" class="storage-impact-panel" hidden></div>
+
+    <div class="storage-actions-hint">
+      Recommended flow: select templates → Review impact → Archive selected (or link an existing package) → wait for backup sync → Clean selected. Review and archive may be explicitly bypassed, but cleanup without a backup is irreversible.
+    </div>
+
+    <div class="pipeline-runs-table-wrap">
+      <table class="pipeline-runs-table storage-table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="storage-select-all" title="Select all templates with cleanable files" /></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="template">Template <span data-sort-indicator="template"></span></button></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="created">Created <span data-sort-indicator="created">▲</span></button></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="used_in">Used in <span data-sort-indicator="used_in"></span></button></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="disk_used">Disk used <span data-sort-indicator="disk_used"></span></button></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="can_clean">Can clean <span data-sort-indicator="can_clean"></span></button></th>
+            <th><button class="storage-sort-btn" type="button" data-sort-key="status">Status <span data-sort-indicator="status"></span></button></th>
+          </tr>
+          <tr class="storage-column-filters">
+            <th><button id="storage-clear-column-filters" class="storage-clear-filters" type="button" title="Clear column filters">Clear</button></th>
+            <th><input id="storage-filter-template" type="search" placeholder="Filter template" aria-label="Filter Template" /></th>
+            <th><input id="storage-filter-created" type="date" title="Created on or before" aria-label="Filter Created on or before" /></th>
+            <th><input id="storage-filter-used-in" type="search" placeholder="Filter pipeline" aria-label="Filter Used in" /></th>
+            <th><input id="storage-filter-disk-used" type="number" min="0" step="1" placeholder="Min MB" aria-label="Minimum disk used in MB" /></th>
+            <th><input id="storage-filter-can-clean" type="number" min="0" step="1" placeholder="Min MB" aria-label="Minimum cleanable space in MB" /></th>
+            <th><input id="storage-filter-status" type="search" placeholder="Filter status" aria-label="Filter Status" /></th>
+          </tr>
+        </thead>
+        <tbody id="storage-body"></tbody>
+      </table>
+    </div>
+
+    <div class="storage-advanced">
+      <button id="storage-toggle-files" class="btn btn-secondary btn-sm" type="button">Show individual files</button>
+    </div>
+    <div id="storage-files-wrap" class="pipeline-runs-table-wrap" hidden>
+      <table class="pipeline-runs-table storage-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>File</th>
+            <th>Size</th>
+            <th>Templates</th>
+            <th>Recommendation</th>
+          </tr>
+        </thead>
+        <tbody id="storage-files-body"></tbody>
+      </table>
+    </div>
+
+    <div class="storage-archive-section">
+      <div class="pipeline-canvas-title">Backup packages</div>
+      <div class="pipeline-canvas-subtitle">Packages from the backup folder above. Restore is the rollback path if a cleanup removed the wrong files.</div>
+      <div class="pipeline-runs-table-wrap" style="margin-top:12px">
+        <table class="pipeline-runs-table storage-table">
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Created</th>
+              <th>Size</th>
+              <th>Items</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="storage-archives-body"><tr><td colspan="5">No archive packages yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="/static/storage_health.js?v=14"></script>
+</body>
+</html>

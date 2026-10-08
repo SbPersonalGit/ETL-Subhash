@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift - General Utility Progress</title>
+  <link rel="stylesheet" href="/static/style.css?v=15" />
+  <link rel="stylesheet" href="/static/general_utility.css?v=5" />
+</head>
+<body class="gu-page" data-job-id="{{ job_id|e }}" data-job-type="{{ (job.job_type if job else 'create_fields')|default('create_fields', true)|e }}">
+<header class="topbar">
+  <div class="topbar-left"><a class="logo brand-logo" href="/"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">General Utility Progress</span></div>
+  <div class="topbar-center"><div id="gup-auth" class="auth-status {{ 'error' if job.status == 'error' else 'ok' if job.status == 'completed' else 'checking' }}"><span class="dot"></span> {{ job.message|e }}</div></div>
+  <div class="topbar-right"><button id="gup-refresh" class="btn btn-secondary">Refresh</button><a href="/pipeline/runs" class="btn btn-secondary nav-btn">All Runs</a><a href="/general-utility" class="btn btn-secondary nav-btn">General Utility</a></div>
+</header>
+<main class="gu-shell">
+  <section class="gu-card">
+    <div class="gu-heading"><div><h1 id="gup-title">General Utility · {{ job.object|default('Metadata', true)|e }}</h1><p id="gup-meta">Run {{ job_id|e }} · Target {{ job.target_profile|default('default', true)|e }}</p></div><span id="gup-status" class="gu-badge">{{ job.status|default('unknown', true)|upper|e }}</span></div>
+    <div class="gu-notice">Execution API: <strong id="gup-api">{{ job.execution_api|default('Salesforce Tooling API + REST FieldPermissions', true)|e }}</strong>. Persistent progress is available from Pipeline Runs.</div>
+    <section id="gu-field-progress" class="gu-progress-panel" aria-live="polite">
+      <div class="gu-progress-heading"><div class="gu-spinner" aria-hidden="true"></div><div><strong id="gu-progress-title">{{ job.message|e }}</strong><div id="gu-progress-elapsed" class="gu-help"></div></div><strong id="gu-progress-percent">{{ job.percent|default(0) }}%</strong></div>
+      <div class="gu-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ job.percent|default(0) }}"><div id="gu-progress-bar" class="gu-progress-bar" style="width:{{ job.percent|default(0) }}%"></div></div>
+      <ol id="gu-progress-events" class="gu-progress-events">{% for event in job.events|default([]) %}<li>{{ event.message|e }}</li>{% endfor %}</ol>
+    </section>
+  </section>
+  <section class="gu-card">
+    <h2 id="gup-results-heading">Salesforce field and access results</h2>
+    <div class="gu-table-wrap"><table class="gu-table"><thead id="gup-fields-head"><tr><th>Field</th><th>Field result</th><th>Salesforce field ID</th><th>Permission/Profile</th><th>Access result</th><th>Salesforce permission ID</th></tr></thead><tbody id="gup-fields"><tr><td colspan="6">Waiting for the first Salesforce result...</td></tr></tbody></table></div>
+  </section>
+  <section id="gup-error-card" class="gu-card"{% if not job.error %} hidden{% endif %}><h2>Failure details</h2><pre id="gup-error" class="designer-log-output">{{ job.error|default('', true)|e }}</pre></section>
+</main>
+<script src="/static/general_utility_run_progress.js?v=3"></script>
+</body>
+</html>

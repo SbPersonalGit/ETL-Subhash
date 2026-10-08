@@ -1,0 +1,211 @@
+{
+  "generated_at": "2026-07-31T11:58:36.929805+00:00",
+  "hierarchy_source": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\temp\\hierarchy_edit\\waygate_object_hierarchy.xlsx",
+  "target_org_business_hours": {
+    "attributes": {
+      "type": "BusinessHours",
+      "url": "/services/data/v60.0/sobjects/BusinessHours/01md3000000fRsHAAU"
+    },
+    "Id": "01md3000000fRsHAAU",
+    "Name": "Default",
+    "IsActive": true,
+    "IsDefault": true
+  },
+  "load_order": [
+    "Account",
+    "Campaign",
+    "Product2",
+    "Contact",
+    "Contract",
+    "Opportunity",
+    "Lead",
+    "Case"
+  ],
+  "total_records": 1200,
+  "objects": [
+    {
+      "object": "Account",
+      "csv": "upload_files/Account.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 522,
+      "selected_fields": 261,
+      "populated_fields": 261,
+      "coverage_percent": 50.0,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": []
+    },
+    {
+      "object": "Campaign",
+      "csv": "upload_files/Campaign.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 104,
+      "selected_fields": 52,
+      "populated_fields": 52,
+      "coverage_percent": 50.0,
+      "profile_createable": false,
+      "permission_warning": "The connected target profile cannot create Campaign. Coverage uses schema candidates without profile FLS; grant object and field create access before loading.",
+      "lookup_fields": []
+    },
+    {
+      "object": "Contact",
+      "csv": "upload_files/Contact.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 206,
+      "selected_fields": 103,
+      "populated_fields": 103,
+      "coverage_percent": 50.0,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": [
+        {
+          "object": "Contact",
+          "field": "AccountId",
+          "referenced_object": "Account",
+          "populated_rows": 150,
+          "parent_source": "Account.csv"
+        }
+      ]
+    },
+    {
+      "object": "Product2",
+      "csv": "upload_files/Product2.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 82,
+      "selected_fields": 41,
+      "populated_fields": 41,
+      "coverage_percent": 50.0,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": []
+    },
+    {
+      "object": "Lead",
+      "csv": "upload_files/Lead.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 88,
+      "selected_fields": 44,
+      "populated_fields": 44,
+      "coverage_percent": 50.0,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": []
+    },
+    {
+      "object": "Contract",
+      "csv": "upload_files/Contract.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 393,
+      "selected_fields": 197,
+      "populated_fields": 197,
+      "coverage_percent": 50.1,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": [
+        {
+          "object": "Contract",
+          "field": "AccountId",
+          "referenced_object": "Account",
+          "populated_rows": 150,
+          "parent_source": "Account.csv"
+        },
+        {
+          "object": "Contract",
+          "field": "CustomerSignedId",
+          "referenced_object": "Contact",
+          "populated_rows": 150,
+          "parent_source": "Contact.csv"
+        }
+      ]
+    },
+    {
+      "object": "Opportunity",
+      "csv": "upload_files/Opportunity.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 334,
+      "selected_fields": 167,
+      "populated_fields": 167,
+      "coverage_percent": 50.0,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": [
+        {
+          "object": "Opportunity",
+          "field": "AccountId",
+          "referenced_object": "Account",
+          "populated_rows": 150,
+          "parent_source": "Account.csv"
+        },
+        {
+          "object": "Opportunity",
+          "field": "CampaignId",
+          "referenced_object": "Campaign",
+          "populated_rows": 150,
+          "parent_source": "Campaign.csv"
+        },
+        {
+          "object": "Opportunity",
+          "field": "ContactId",
+          "referenced_object": "Contact",
+          "populated_rows": 150,
+          "parent_source": "Contact.csv"
+        },
+        {
+          "object": "Opportunity",
+          "field": "ContractId",
+          "referenced_object": "Contract",
+          "populated_rows": 150,
+          "parent_source": "Contract.csv"
+        }
+      ]
+    },
+    {
+      "object": "Case",
+      "csv": "upload_files/Case.csv",
+      "records": 150,
+      "writable_non_calculated_fields": 643,
+      "selected_fields": 322,
+      "populated_fields": 322,
+      "coverage_percent": 50.1,
+      "profile_createable": true,
+      "permission_warning": "",
+      "lookup_fields": [
+        {
+          "object": "Case",
+          "field": "BusinessHoursId",
+          "referenced_object": "BusinessHours",
+          "populated_rows": 150,
+          "parent_source": "target BusinessHours"
+        },
+        {
+          "object": "Case",
+          "field": "AccountId",
+          "referenced_object": "Account",
+          "populated_rows": 150,
+          "parent_source": "Account.csv"
+        },
+        {
+          "object": "Case",
+          "field": "ContactId",
+          "referenced_object": "Contact",
+          "populated_rows": 150,
+          "parent_source": "Contact.csv"
+        },
+        {
+          "object": "Case",
+          "field": "ProductId",
+          "referenced_object": "Product2",
+          "populated_rows": 150,
+          "parent_source": "Product2.csv"
+        },
+        {
+          "object": "Case",
+          "field": "Opportunity_Name__c",
+          "referenced_object": "Opportunity",
+          "populated_rows": 150,
+          "parent_source": "Opportunity.csv"
+        }
+      ]
+    }
+  ]
+}

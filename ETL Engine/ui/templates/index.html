@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrgShift — Source Org Migration</title>
+  <link rel="stylesheet" href="/static/style.css?v=10" />
+</head>
+<body>
+
+<!-- ── Top Bar ─────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
+    <span class="subtitle">Source Org Migration</span>
+  </div>
+  <div class="topbar-center">
+    <div id="auth-status" class="auth-status checking">
+      <span class="dot"></span> Connecting...
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-inline-group">
+      <label class="org-toggle-label">Org:</label>
+      <select id="org-select" class="org-select">
+        <option value="source">Source</option>
+        <option value="target">Target</option>
+      </select>
+      <label class="org-toggle-label">Profile:</label>
+      <select id="org-profile-select" class="org-select template-select"></select>
+    </div>
+    <div class="topbar-inline-group">
+      <input id="migration-name" class="org-select template-select" type="text" value="Custom Migration" placeholder="Migration Name" />
+      <input id="pipeline-id" class="org-select template-select" type="text" value="migration" placeholder="Pipeline ID" />
+      <select id="template-select" class="org-select template-select">
+        <option value="">Load Template</option>
+      </select>
+    </div>
+    <details class="topbar-menu">
+      <summary>Pipeline</summary>
+      <div class="topbar-menu-body">
+        <a href="/" class="btn btn-secondary nav-btn">Home</a>
+        <a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a>
+        <a href="/flat-files" class="btn btn-secondary nav-btn">Flat File Migration</a>
+        <button id="btn-generate" class="btn btn-primary" disabled>Generate Config ↓</button>
+        <button id="btn-topology" class="btn btn-secondary" disabled>View Topology</button>
+      </div>
+    </details>
+    <details class="topbar-menu">
+      <summary>Templates</summary>
+      <div class="topbar-menu-body">
+        <button id="btn-manage-templates" class="btn btn-secondary">Manage Templates</button>
+        <button id="btn-save-template" class="btn btn-secondary">Save Template</button>
+        <button id="btn-save-template-as" class="btn btn-secondary">Save As</button>
+      </div>
+    </details>
+    <details class="topbar-menu">
+      <summary>Tools</summary>
+      <div class="topbar-menu-body">
+        <button id="btn-refresh-metadata" class="btn btn-secondary">Refresh Metadata</button>
+        <button id="btn-external-ids" class="btn btn-secondary" disabled>External IDs</button>
+      </div>
+    </details>
+  </div>
+</header>
+
+<!-- ── Main Layout ─────────────────────────────────────────────── -->
+<div class="main-layout">
+
+  <!-- ── Left: Object List / Tree Panel ── -->
+  <aside class="left-panel" id="left-panel">
+
+    <!-- Object list (shown when no seed selected) -->
+    <div id="object-browser" class="panel-section">
+      <div class="panel-header">
+        <span>Objects</span>
+        <span id="object-count" class="badge"></span>
+      </div>
+      <div class="object-search-wrap">
+        <input id="search-objects" class="object-search" type="text" placeholder="🔍 Search objects..." />
+      </div>
+      <div id="object-list" class="object-list">
+        <div class="loading">Loading objects...</div>
+      </div>
+    </div>
+
+    <!-- Traversal tree (shown when seed selected) -->
+    <div id="tree-panel" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <span id="tree-title">Migration Tree</span>
+        <button class="btn-link" id="btn-change-seed" onclick="changeSeed()">Change</button>
+      </div>
+      <div class="tree-toolbar">
+        <div class="tree-toolbar-group">
+          <label class="select-all-label">
+            <input type="checkbox" id="tree-show-parents" checked /> Parents
+          </label>
+          <label class="select-all-label">
+            <input type="checkbox" id="tree-show-children" checked /> Children
+          </label>
+        </div>
+        <div class="tree-toolbar-group">
+          <button id="tree-add-parent-top" class="btn btn-secondary btn-sm">+ Parent</button>
+          <button id="tree-add-child-top" class="btn btn-secondary btn-sm">+ Child</button>
+        </div>
+      </div>
+      <div id="tree-container" class="tree-container"></div>
+    </div>
+
+  </aside>
+
+  <div id="panel-resizer" class="panel-resizer" aria-hidden="true"></div>
+
+  <!-- ── Right: Fields Detail Panel ── -->
+  <main class="fields-panel" id="fields-panel">
+    <div class="fields-empty" id="fields-empty">
+      <div class="empty-icon">←</div>
+      <div class="empty-title">Select an object from the tree</div>
+      <div class="empty-subtitle">Click any node in the tree to view and select its fields</div>
+    </div>
+    <div id="fields-detail" class="fields-detail" style="display:none">
+      <div class="fields-detail-header">
+        <div class="fh-left">
+          <div id="fh-object-name" class="fh-object-name"></div>
+          <div id="fh-breadcrumb" class="fh-breadcrumb"></div>
+        </div>
+        <div class="fh-right">
+          <input id="fh-filter" class="fh-input fh-where" placeholder="WHERE clause..." />
+          <input id="fh-order" class="fh-input fh-order" placeholder="ORDER BY..." />
+          <input id="fh-limit" class="fh-input fh-small" type="number" min="0" step="1" placeholder="LIMIT" />
+          <input id="fh-offset" class="fh-input fh-small" type="number" min="0" step="1" placeholder="OFFSET" />
+          <input id="fh-extid"  class="fh-input fh-extid" placeholder="External ID field" />
+        </div>
+      </div>
+      <div class="fields-search-bar">
+        <input id="field-search" class="field-search-input" type="text" placeholder="🔍 Search fields..." oninput="filterFieldsPanel(this.value)" />
+        <div class="select-all-group">
+          <label class="select-all-label">
+            <input type="checkbox" id="sel-all-fields" onchange="selectAllFieldsPanel(this.checked)" /> All
+          </label>
+          <label class="select-all-label">
+            <input type="checkbox" id="sel-all-lookups" onchange="selectSectionFields('lookups', this.checked)" /> Lookups
+          </label>
+          <label class="select-all-label">
+            <input type="checkbox" id="sel-all-others" onchange="selectSectionFields('fields', this.checked)" /> Fields
+          </label>
+        </div>
+      </div>
+      <div id="fields-body" class="fields-body"></div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ── Bottom Bar ──────────────────────────────────────────────── -->
+<div class="bottombar" id="bottombar" style="display:none">
+  <div class="bottombar-inner">
+    <div class="bottombar-item">
+      <label>Seed WHERE</label>
+      <input id="seed-filter" type="text" placeholder="e.g. Status__c = 'Active'" />
+    </div>
+    <div class="bottombar-item">
+      <label>Seed ORDER BY</label>
+      <input id="seed-order" type="text" placeholder="e.g. CreatedDate DESC" />
+    </div>
+    <div class="bottombar-item">
+      <label>Seed LIMIT</label>
+      <input id="seed-limit" type="number" min="0" step="1" placeholder="100" />
+    </div>
+    <div class="bottombar-item">
+      <label>Seed OFFSET</label>
+      <input id="seed-offset" type="number" min="0" step="1" placeholder="0" />
+    </div>
+    <div class="bottombar-item">
+      <label>Max Records</label>
+      <input id="max-records" type="number" value="10000" />
+    </div>
+    <div class="bottombar-item">
+      <button id="btn-generate-bottom" class="btn btn-primary">Generate Config ↓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add Node Modal ──────────────────────────────────────────── -->
+<div id="add-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span id="add-modal-title">Add Parent</span>
+      <button onclick="closeAddModal()" class="modal-close">✕</button>
+    </div>
+    <div class="modal-search-wrap">
+      <input id="add-modal-search" class="object-search" placeholder="🔍 Search..." oninput="filterAddModal(this.value)" />
+    </div>
+    <div id="add-modal-options" class="add-modal-options" style="display:none">
+      <label class="select-all-label">
+        <input type="checkbox" id="add-modal-apply-all" checked />
+        Apply to all matching nodes
+      </label>
+    </div>
+    <div id="add-modal-list" class="add-modal-list"></div>
+  </div>
+</div>
+
+<!-- ── Config Output Modal ─────────────────────────────────────── -->
+<div id="modal-overlay" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span>Generated Migration Config (YAML)</span>
+      <button id="modal-close" class="modal-close">✕</button>
+    </div>
+    <div class="modal-actions">
+      <button id="btn-copy" class="btn btn-secondary">Copy</button>
+      <button id="btn-save" class="btn btn-primary">Save to config/migration.yaml</button>
+    </div>
+    <pre id="yaml-output" class="yaml-output"></pre>
+  </div>
+</div>
+
+<div id="topology-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-topology">
+    <div class="topology-ribbon-peek" aria-hidden="true"><span class="topology-ribbon-peek-hint">Controls</span></div>
+    <div class="topology-ribbons">
+    <div class="modal-header">
+      <span>Traversal Topology</span>
+      <div class="modal-header-actions">
+        <button id="topology-expand" class="btn btn-secondary btn-sm">Fullscreen</button>
+        <button id="topology-close" class="modal-close">x</button>
+      </div>
+    </div>
+    <div class="topology-toolbar">
+      <label class="topology-level-label">
+        Layout
+        <select id="topology-layout-mode" class="topology-layout-select">
+          <option value="minimal">Minimal</option>
+          <option value="radial">Radial</option>
+          <option value="classic">Classic</option>
+        </select>
+      </label>
+      <label class="topology-level-label">
+        Radial Scope
+        <select id="topology-radial-scope" class="topology-layout-select">
+          <option value="children">Children</option>
+          <option value="parents">Parents</option>
+        </select>
+      </label>
+      <label class="topology-level-label">
+        Font
+        <input type="range" id="topology-font-scale" min="50" max="100" step="5" value="100" />
+      </label>
+      <label class="topology-level-label">
+        Node Type
+        <select id="topology-node-fill-filter" class="topology-layout-select">
+          <option value="all">All</option>
+          <option value="filled">Filled</option>
+          <option value="hollow">Hollow</option>
+        </select>
+      </label>
+      <label class="select-all-label" title="Collapse consecutive same-type siblings of the same parent into one dot with a ×N badge (Radial only)">
+        <input type="checkbox" id="topology-group-duplicates" /> Group Duplicates
+      </label>
+      <label class="select-all-label">
+        <input type="checkbox" id="topology-show-children" checked /> Children
+      </label>
+      <label class="select-all-label">
+        <input type="checkbox" id="topology-show-parents" checked /> Parents
+      </label>
+      <label class="topology-level-label">
+        Min Level
+        <input type="number" id="topology-min-level" class="topology-level-input" min="0" value="0" />
+      </label>
+      <label class="topology-level-label">
+        Max Level
+        <input type="number" id="topology-max-level" class="topology-level-input" min="0" value="6" />
+      </label>
+      <button id="topology-clear-focus" class="btn btn-secondary btn-sm">Clear Focus</button>
+    </div>
+    <div class="topology-summary" id="topology-summary"></div>
+    </div>
+    <div class="topology-canvas-wrap">
+      <svg id="topology-canvas" class="topology-canvas"></svg>
+    </div>
+  </div>
+</div>
+
+<div id="external-id-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-external-ids">
+    <div class="modal-header">
+      <span>External ID Mapping</span>
+      <button id="external-id-close" class="modal-close">✕</button>
+    </div>
+    <div class="modal-actions external-id-actions">
+      <div class="external-id-help">
+        Fill this once for each unique object in the current topology. On save, the mapping is applied to every matching node automatically and used in generated `migration.yaml`.
+      </div>
+      <div class="external-id-action-buttons">
+        <label class="select-all-label">
+          <input id="external-id-unmapped-only" type="checkbox" checked />
+          Unmapped Only
+        </label>
+        <button id="external-id-apply-defaults" class="btn btn-secondary">Apply Suggested</button>
+        <button id="external-id-save" class="btn btn-primary">Save Mappings</button>
+      </div>
+    </div>
+    <div id="external-id-table-wrap" class="external-id-table-wrap"></div>
+  </div>
+</div>
+
+<div id="template-manager-modal" class="modal-overlay" style="display:none">
+  <div class="modal modal-template-manager">
+    <div class="modal-header">
+      <span>Manage Templates</span>
+      <button id="template-manager-close" class="modal-close">x</button>
+    </div>
+    <div class="template-manager-help">
+      Delete is only enabled for templates that are not currently loaded in the workspace.
+    </div>
+    <div id="template-manager-list" class="template-manager-list"></div>
+  </div>
+</div>
+
+<script src="/static/app_v2.js"></script>
+</body>
+</html>

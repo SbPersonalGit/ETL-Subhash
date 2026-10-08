@@ -1,0 +1,108 @@
+﻿.sfdx/
+.sf/
+__pycache__/
+*.py[cod]
+*.pyc.*
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+# Local runtime state. Keep only the flat-file drop-folder layout and guidance.
+state/*
+!state/flat_file_drop/
+state/flat_file_drop/*
+!state/flat_file_drop/.gitkeep
+!state/flat_file_drop/README.md
+logs/
+exports/
+*.log
+*.csv
+!docs/template_designer_entry_validation_checks.csv
+!docs/prevalidation_check_catalog.csv
+*.duckdb
+*.wal
+*.xlsx
+!docs/**/*.xlsx
+# Local workspace migration config. Keep only starter examples.
+config/**
+!config/migration_example.yaml
+!config/delete_example.yaml
+!config/archive.example.json
+ui/object_hierarchy.xlsx
+
+# Workspace-local runtime data (keep only layout markers/documentation)
+runtime/active/**
+!runtime/active/**/
+!runtime/active/**/.gitkeep
+runtime/archive/**
+!runtime/archive/.gitkeep
+runtime/restore/**
+!runtime/restore/.gitkeep
+runtime/package_staging/**
+!runtime/package_staging/.gitkeep
+
+# ---------------------------------------------------------------------------
+# User / campaign scratch — not required for others to run the ETL app.
+# Put one-off migration analysis, retries, and notes here or leave at root;
+# they stay local and will not be pushed.
+# ---------------------------------------------------------------------------
+temp/
+artifacts/
+reports/
+local_ops/
+scratch/
+.skill-staging/
+
+# Workspace-only EmailMessage assessment/conversion utilities
+scripts/analyze_emailmessage_json.py
+scripts/convert_json_array_to_csv.py
+scripts/extract_failed_records_from_source.py
+tests/test_convert_json_array_to_csv.py
+
+# Root-level migration notes, screenshots, and one-off repair/inspect scripts
+/*.txt
+/*.png
+/extract_*.py
+/fix_*.py
+/inspect_*.py
+/verify_missing_*.py
+/reconcile_*.py
+/compare_*.py
+/consolidate_*.py
+/audit_*.py
+
+# Campaign-specific scripts under scripts/ (object/retry analysis, not product tooling)
+scripts/analyze_case_*.py
+scripts/analyze_failed_*.py
+scripts/analyze_file_validation_failures.py
+scripts/analyze_post_validation_artifacts.py
+scripts/analyze_reference_fallbacks.py
+scripts/assess_case_team_member_migration.py
+scripts/build_ka_online_review_file.py
+scripts/check_extracted_case_parents_in_uat.py
+scripts/check_mcs_ctd_*.py
+scripts/create_case_*.py
+scripts/create_parent*.py
+scripts/create_parentid_*.py
+scripts/create_reference_mismatch_report.py
+scripts/create_round_1_analysis_workbook.py
+scripts/delete_task_relation_run_ids.py
+scripts/load_case_team_roles_and_templates.py
+scripts/migrate_case_team_members.py
+scripts/prepare_case*.py
+scripts/prepare_task_relation_*.py
+scripts/publish_approved_ka_articles.py
+scripts/repair_case_parent_action_workbook.py
+scripts/retry_case_team_members_with_fallback.py
+scripts/retry_mcs_ctd_*.py
+scripts/update_mcs_ctd_*.py
+scripts/verify_mcs_ctd_*.py
+scripts/verify_task_relation_*.py
+
+# Local analysis / generated artifacts
+/output/
+
+# Future / research product docs (not required to operate the app today)
+docs/AI_ENABLED_ETL_PRODUCT_VISION.md
+docs/AI_ENABLED_ETL_RESEARCH_PROMPTS.md

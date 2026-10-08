@@ -1,0 +1,99 @@
+body.gu-page,
+.gu-page {
+  height: auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg, #08111f);
+}
+.gu-page > .topbar { flex: 0 0 auto; }
+.gu-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+  display: grid;
+  gap: 20px;
+  align-content: start;
+  overflow: visible;
+}
+.gu-card { background: var(--panel, #0f172a); border: 1px solid var(--border, #243041); border-radius: 16px; padding: 22px; display: grid; gap: 16px; }
+.gu-card h1, .gu-card h2, .gu-card h3, .gu-card p { margin: 0; }
+.gu-card p, .gu-help { color: var(--text-dim, #94a3b8); line-height: 1.5; }
+.gu-grid { display: grid; gap: 14px; align-items: end; }
+.gu-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.gu-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.gu-grid label { display: grid; gap: 7px; color: var(--text-dim, #94a3b8); font-size: .88rem; }
+.gu-span-2 { grid-column: span 2; }
+.gu-heading { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+.gu-collapsible { padding: 0; }
+.gu-collapsible > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: start; padding: 22px; }
+.gu-collapsible > summary::-webkit-details-marker { display: none; }
+.gu-collapsible > summary p { margin-top: 8px; }
+.gu-collapsible[open] > summary { border-bottom: 1px solid var(--border, #243041); }
+.gu-collapsible[open] > summary .gu-badge { background: #1e3a8a; }
+.gu-collapsible-body { padding: 22px; display: grid; gap: 16px; }
+.gu-access-selectors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gu-access-selectors label { min-width: 0; }
+.gu-badge { white-space: nowrap; padding: 5px 9px; border-radius: 999px; background: #172554; color: #bfdbfe; font-size: .75rem; }
+.gu-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.gu-summary > div { background: #111c30; border: 1px solid var(--border, #243041); border-radius: 12px; padding: 14px; }
+.gu-summary strong { display: block; font-size: 1.35rem; margin-top: 4px; }
+.gu-table-wrap {
+  overflow: auto;
+  max-height: min(50vh, 520px);
+  border: 1px solid var(--border, #243041);
+  border-radius: 10px;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #64748b #0b1322;
+}
+.gu-table-wrap::-webkit-scrollbar { width: 12px; height: 12px; }
+.gu-table-wrap::-webkit-scrollbar-track { background: #0b1322; }
+.gu-table-wrap::-webkit-scrollbar-thumb { background: #64748b; border-radius: 8px; border: 2px solid #0b1322; }
+.gu-table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+.gu-table th, .gu-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border, #243041); vertical-align: top; }
+.gu-table th { color: #cbd5e1; background: #111827; position: sticky; top: 0; z-index: 1; }
+.gu-table tr:last-child td { border-bottom: 0; }
+.gu-table .fh-input { min-width: 180px; }
+.gu-message, .gu-result, .gu-notice { padding: 12px 14px; border-radius: 9px; background: #111c30; color: #cbd5e1; }
+.gu-message:empty { display: none; }
+.gu-message.error { color: #fecaca; background: #3f151b; }
+.gu-invalid-api-name { color: #f87171 !important; border-color: #ef4444 !important; }
+.gu-field-error { color: #f87171; font-size: .76rem; margin-top: 5px; max-width: 280px; }
+.gu-message.ok, .gu-result.ok { color: #bbf7d0; background: #102c23; }
+.gu-notice.warning { border: 1px solid #854d0e; background: #2c210c; color: #fde68a; }
+.gu-result a { color: #93c5fd; margin-right: 14px; }
+.gu-progress-panel { display: grid; gap: 12px; padding: 15px; border: 1px solid #31557d; border-radius: 10px; background: #0b1728; }
+.gu-progress-panel[hidden] { display: none; }
+.gu-progress-heading { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; }
+.gu-spinner { width: 22px; height: 22px; border: 3px solid #29415e; border-top-color: #60a5fa; border-radius: 50%; animation: gu-spin .8s linear infinite; }
+.gu-progress-panel.complete .gu-spinner { animation: none; border-color: #22c55e; background: #22c55e; box-shadow: inset 0 0 0 5px #0b1728; }
+.gu-progress-panel.error { border-color: #7f1d1d; background: #2a1118; }
+.gu-progress-panel.error .gu-spinner { animation: none; border-color: #ef4444; }
+.gu-progress-track { height: 10px; overflow: hidden; border-radius: 999px; background: #1e293b; }
+.gu-progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2563eb, #38bdf8); transition: width .25s ease; }
+.gu-progress-panel.complete .gu-progress-bar { background: #22c55e; }
+.gu-progress-panel.error .gu-progress-bar { background: #ef4444; }
+.gu-progress-events { max-height: 190px; overflow: auto; margin: 0; padding-left: 26px; color: #cbd5e1; font-size: .86rem; line-height: 1.55; }
+.gu-progress-events li:last-child { color: #f8fafc; }
+@keyframes gu-spin { to { transform: rotate(360deg); } }
+.gu-multi { min-height: 130px; }
+.gu-column-picker { display: grid; gap: 10px; }
+.gu-checkbox-list { max-height: 320px; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 7px; padding: 12px; border: 1px solid var(--border, #243041); border-radius: 9px; background: #0b1322; scrollbar-gutter: stable; }
+.gu-checkbox-list label { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 7px; color: var(--text, #e2e8f0); overflow-wrap: anywhere; }
+.gu-checkbox-list label:hover { background: #172033; }
+.gu-checkbox-list label[hidden] { display: none; }
+#gu-results { display: grid; gap: 20px; }
+#gu-results[hidden] { display: none; }
+@media (max-width: 900px) {
+  .gu-grid-4, .gu-grid-3, .gu-summary { grid-template-columns: 1fr; }
+  .gu-span-2 { grid-column: auto; }
+  .topbar { height: auto; flex-wrap: wrap; }
+  .gu-table-wrap { max-height: min(60vh, 420px); }
+  .gu-access-selectors { grid-template-columns: 1fr; }
+}

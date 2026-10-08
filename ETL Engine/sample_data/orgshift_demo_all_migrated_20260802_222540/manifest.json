@@ -1,0 +1,1011 @@
+{
+  "target_profile": "default",
+  "maximum_records": 2000,
+  "objects": [
+    {
+      "object": "Account",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 14,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "Account.csv"
+    },
+    {
+      "object": "Account_Plan_Initiative__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "Account_Plan_Initiative__c.csv"
+    },
+    {
+      "object": "BA_Condition_Master__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Condition_Master__c.csv"
+    },
+    {
+      "object": "BA_Inco_Terms__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Inco_Terms__c.csv"
+    },
+    {
+      "object": "BA_LE_Override__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_LE_Override__c.csv"
+    },
+    {
+      "object": "BA_LE_Preferences__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_LE_Preferences__c.csv"
+    },
+    {
+      "object": "BA_Legal_Entity__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Legal_Entity__c.csv"
+    },
+    {
+      "object": "BA_Questionnaire__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Questionnaire__c.csv"
+    },
+    {
+      "object": "BA_Tier3_Threshold__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Tier3_Threshold__c.csv"
+    },
+    {
+      "object": "BA_Treaty_Matrix__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BA_Treaty_Matrix__c.csv"
+    },
+    {
+      "object": "BH_MCS_AgreementIBLink__c",
+      "candidate_ids": 2,
+      "requested": 2,
+      "exported": 2,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 2,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_AgreementIBLink__c.csv"
+    },
+    {
+      "object": "BH_MCS_MCIB__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 15,
+      "normalized_dependent_values": 1,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_MCIB__c.csv"
+    },
+    {
+      "object": "BH_MCS_MCSAPServicesTransactions__c",
+      "candidate_ids": 2,
+      "requested": 2,
+      "exported": 2,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 4,
+      "normalized_dependent_values": 2,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_MCSAPServicesTransactions__c.csv"
+    },
+    {
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 9,
+      "normalized_dependent_values": 2,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_MCServiceAgreement__c.csv"
+    },
+    {
+      "object": "BH_MCS_SMAXDSCUSTOMERASSETS__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 0,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_SMAXDSCUSTOMERASSETS__c.csv"
+    },
+    {
+      "object": "BH_MCS_WOAssetLink__c",
+      "candidate_ids": 2,
+      "requested": 2,
+      "exported": 2,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 2,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_WOAssetLink__c.csv"
+    },
+    {
+      "object": "BH_MCS_WOIBLink__c",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 2,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "BH_MCS_WOIBLink__c.csv"
+    },
+    {
+      "object": "Case",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 34,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "Case.csv"
+    },
+    {
+      "object": "Contact",
+      "candidate_ids": 100,
+      "requested": 87,
+      "exported": 87,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 3,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "Contact.csv"
+    },
+    {
+      "object": "Contract",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 86,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 20,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 86,
+      "omitted_required_reference_rows": 0,
+      "file": "Contract.csv"
+    },
+    {
+      "object": "Opportunity",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 86,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 11,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "Opportunity.csv"
+    },
+    {
+      "object": "Project_ge_og__c",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 0,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 1,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 86,
+      "file": "Project_ge_og__c.csv"
+    },
+    {
+      "object": "SVMXC__Installed_Product__c",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 86,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 2,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "SVMXC__Installed_Product__c.csv"
+    },
+    {
+      "object": "SVMXC__Service_Group_Members__c",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 0,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 3,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 86,
+      "file": "SVMXC__Service_Group_Members__c.csv"
+    },
+    {
+      "object": "SVMXC__Service_Order__c",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 0,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 11,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "SVMXC__Service_Order__c.csv"
+    },
+    {
+      "object": "SVMXC__Site__c",
+      "candidate_ids": 100,
+      "requested": 86,
+      "exported": 86,
+      "external_id": "Legacy_ID__c",
+      "converted_lookup_fields": 3,
+      "normalized_dependent_values": 0,
+      "normalized_contract_statuses": 0,
+      "omitted_required_reference_rows": 0,
+      "file": "SVMXC__Site__c.csv"
+    }
+  ],
+  "sources": [
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "Account_Plan_Initiative__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\Account_Plan_Initiative__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Condition_Master__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Condition_Master__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Inco_Terms__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Inco_Terms__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_LE_Override__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_LE_Override__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_LE_Preferences__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_LE_Preferences__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Legal_Entity__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Legal_Entity__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Questionnaire__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Questionnaire__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Tier3_Threshold__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Tier3_Threshold__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BA_Treaty_Matrix__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BA_Treaty_Matrix__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_152325_531308",
+      "pipeline": "1000_TestData_v1",
+      "object": "BH_MCS_SMAXDSCUSTOMERASSETS__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_152325_531308\\1000_TestData_v1_attempt_1\\cleaned\\BH_MCS_SMAXDSCUSTOMERASSETS__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_155920_745626",
+      "pipeline": "1000_Testdata_v2",
+      "object": "BA_Condition_Master__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_155920_745626\\1000_Testdata_v2_attempt_1\\cleaned\\BA_Condition_Master__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_155920_745626",
+      "pipeline": "1000_Testdata_v2",
+      "object": "BA_Questionnaire__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_155920_745626\\1000_Testdata_v2_attempt_1\\cleaned\\BA_Questionnaire__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_155920_745626",
+      "pipeline": "1000_Testdata_v2",
+      "object": "BA_Tier3_Threshold__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_155920_745626\\1000_Testdata_v2_attempt_1\\cleaned\\BA_Tier3_Threshold__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "SVMXC__Installed_Product__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\SVMXC__Installed_Product__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_165129_179752",
+      "pipeline": "Group_48",
+      "object": "SVMXC__Site__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_165129_179752\\Group_48_attempt_1\\cleaned\\SVMXC__Site__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Installed_Product__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Installed_Product__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_170710_743499",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Site__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_170710_743499\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Site__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Installed_Product__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Installed_Product__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_172545_172660",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Site__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_172545_172660\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Site__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Installed_Product__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Installed_Product__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174232_233612",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Site__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174232_233612\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Site__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_AgreementIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_AgreementIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_MCSAPServicesTransactions__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_MCSAPServicesTransactions__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_SMAXDSCUSTOMERASSETS__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_SMAXDSCUSTOMERASSETS__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_WOAssetLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_WOAssetLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174320_810771",
+      "pipeline": "WayGateClean_v3",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174320_810771\\WayGateClean_v3_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Account",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Account_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_MCServiceAgreement__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_MCServiceAgreement__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "BH_MCS_WOIBLink__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\BH_MCS_WOIBLink__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Installed_Product__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Installed_Product__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_174649_503110",
+      "pipeline": "Group_48_v1",
+      "object": "SVMXC__Site__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_174649_503110\\Group_48_v1_attempt_1\\cleaned\\SVMXC__Site__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "BH_MCS_MCIB__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\BH_MCS_MCIB__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "Contract",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\Contract_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260731_175628_830080",
+      "pipeline": "Group_48_v2",
+      "object": "SVMXC__Service_Order__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260731_175628_830080\\Group_48_v2_attempt_1\\cleaned\\SVMXC__Service_Order__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_081145_706874",
+      "pipeline": "Group_48_v3",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_081145_706874\\Group_48_v3_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_081145_706874",
+      "pipeline": "Group_48_v3",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_081145_706874\\Group_48_v3_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_081145_706874",
+      "pipeline": "Group_48_v3",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_081145_706874\\Group_48_v3_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_081145_706874",
+      "pipeline": "Group_48_v3",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_081145_706874\\Group_48_v3_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_081145_706874",
+      "pipeline": "Group_48_v3",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_081145_706874\\Group_48_v3_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_082119_316894",
+      "pipeline": "Group_48_v3",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_082119_316894\\Group_48_v3_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_082119_316894",
+      "pipeline": "Group_48_v3",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_082119_316894\\Group_48_v3_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_082119_316894",
+      "pipeline": "Group_48_v3",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_082119_316894\\Group_48_v3_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_082119_316894",
+      "pipeline": "Group_48_v3",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_082119_316894\\Group_48_v3_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_082119_316894",
+      "pipeline": "Group_48_v3",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_082119_316894\\Group_48_v3_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_083556_297571",
+      "pipeline": "Group_48_v3",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_083556_297571\\Group_48_v3_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_083556_297571",
+      "pipeline": "Group_48_v3",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_083556_297571\\Group_48_v3_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_083556_297571",
+      "pipeline": "Group_48_v3",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_083556_297571\\Group_48_v3_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_083556_297571",
+      "pipeline": "Group_48_v3",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_083556_297571\\Group_48_v3_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_083556_297571",
+      "pipeline": "Group_48_v3",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_083556_297571\\Group_48_v3_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_084127_849071",
+      "pipeline": "Group_48_v3",
+      "object": "Case",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_084127_849071\\Group_48_v3_attempt_1\\cleaned\\Case_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_084127_849071",
+      "pipeline": "Group_48_v3",
+      "object": "Contact",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_084127_849071\\Group_48_v3_attempt_1\\cleaned\\Contact_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_084127_849071",
+      "pipeline": "Group_48_v3",
+      "object": "Opportunity",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_084127_849071\\Group_48_v3_attempt_1\\cleaned\\Opportunity_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_084127_849071",
+      "pipeline": "Group_48_v3",
+      "object": "Project_ge_og__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_084127_849071\\Group_48_v3_attempt_1\\cleaned\\Project_ge_og__c_clean.csv"
+    },
+    {
+      "run": "run_sf_sf_run_20260802_084127_849071",
+      "pipeline": "Group_48_v3",
+      "object": "SVMXC__Service_Group_Members__c",
+      "file": "C:\\Users\\puneetmalhotra\\OneDrive - Nagarro\\Desktop\\VSTS\\ETL\\ETL_For_Local_Only\\exports\\run_sf_sf_run_20260802_084127_849071\\Group_48_v3_attempt_1\\cleaned\\SVMXC__Service_Group_Members__c_clean.csv"
+    }
+  ],
+  "total_exported": 1742
+}
