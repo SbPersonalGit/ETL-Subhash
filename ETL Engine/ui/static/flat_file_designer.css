@@ -3,7 +3,9 @@
   min-height: 100vh;
   overflow-x: auto;
   overflow-y: auto;
-  background: var(--bg, #0f172a);
+  background-color: #8eabbf;
+  background-image: var(--page-bg, linear-gradient(145deg, #1d4ed8, #6d28d9 46%, #0f766e));
+  background-attachment: fixed;
   color: var(--text, #e5e7eb);
 }
 .ff-loader { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; background: rgba(7,12,24,.82); backdrop-filter: blur(3px); }
@@ -13,7 +15,7 @@
 .ff-spinner { width: 40px; height: 40px; border: 4px solid #334155; border-top-color: #4f8cff; border-radius: 50%; animation: ff-spin .8s linear infinite; }
 @keyframes ff-spin { to { transform: rotate(360deg); } }
 .ff-shell { max-width: 1500px; margin: 0 auto; padding: 24px; }
-.ff-card { background: var(--surface, #172033); border: 1px solid var(--border, #334155); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+.ff-card { background: linear-gradient(180deg, rgba(59, 130, 246, 0.1), transparent 90px), var(--surface, #172033); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 14px; padding: 20px; margin-bottom: 18px; box-shadow: 0 14px 36px rgba(2, 6, 23, 0.22); }
 .ff-card h1 { margin: 0 0 6px; }.ff-card p { color: var(--text-dim, #94a3b8); margin: 0 0 16px; }
 .ff-stack { display: grid; gap: 18px; }.ff-upload-row,.ff-action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .ff-drop-panel { border: 1px solid var(--border, #334155); border-radius: 9px; background: rgba(15,23,42,.38); overflow: hidden; }
@@ -27,8 +29,8 @@
 .ff-tree-folder > summary { cursor: pointer; padding: 3px 4px; border-radius: 5px; user-select: none; }
 .ff-tree-folder > summary:hover,.ff-tree-file:hover { background: rgba(79,140,255,.11); }
 .ff-folder-actions { display: inline-flex; gap: 5px; margin-left: 9px; vertical-align: middle; }
-.ff-folder-action { border: 1px solid var(--border, #334155); border-radius: 4px; background: rgba(15,23,42,.7); color: var(--text-dim, #94a3b8); padding: 1px 6px; font: inherit; font-size: 11px; cursor: pointer; }
-.ff-folder-action:hover { color: var(--text, #e2e8f0); border-color: #4f8cff; }
+.ff-folder-action { border: 1px solid rgba(26, 49, 66, 0.35); border-radius: 4px; background: rgba(255, 252, 248, 0.92); color: #1a3142; padding: 1px 6px; font: inherit; font-size: 11px; cursor: pointer; }
+.ff-folder-action:hover { color: #1a3142; border-color: #1a3142; background: #fffdfb; }
 .ff-tree-children { margin-left: 19px; border-left: 1px solid var(--border, #334155); padding-left: 8px; }
 .ff-tree-file { display: flex; align-items: center; gap: 7px; padding: 3px 4px; border-radius: 5px; cursor: pointer; }
 .ff-tree-folder input,.ff-tree-file input { margin: 0 3px 0 0; }

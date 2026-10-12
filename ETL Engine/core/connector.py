@@ -556,6 +556,12 @@ def connector_from_env(prefix: str, profile: str | None = None) -> SFConnector:
     resolved_prefix = env_prefix_for(prefix, profile) if prefix in {"SOURCE", "TARGET"} else prefix
 
     login_url = os.environ[f"{resolved_prefix}_SF_LOGIN_URL"].strip()
+    lowered_login = login_url.lower()
+    if not lowered_login or "your-source-org" in lowered_login or "your-target-org" in lowered_login:
+        raise AuthenticationError(
+            f"{prefix.title()} org is not configured. Set {resolved_prefix}_SF_LOGIN_URL in Open Setup.bat "
+            "to the real Salesforce URL, then run that file again."
+        )
     client_id = os.environ.get(f"{resolved_prefix}_SF_CLIENT_ID", "").strip()
     client_secret = os.environ.get(f"{resolved_prefix}_SF_CLIENT_SECRET", "").strip()
     grant_type = os.environ.get(f"{resolved_prefix}_SF_GRANT_TYPE", "client_credentials").strip()

@@ -49,6 +49,7 @@ from core.workspace_layout import (
     read_target_setup,
     save_target_setup,
     schedule_python_server_restart,
+    schedule_python_server_stop,
     server_is_running,
     start_python_server,
     start_result_publisher,
@@ -617,6 +618,16 @@ def start_setup_server():
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:
         logger.exception("Failed to start Python server")
+        return jsonify({"error": str(exc)}), 500
+
+
+@app.route("/api/setup/stop", methods=["POST"])
+def stop_setup_server():
+    try:
+        result = schedule_python_server_stop(ETL_PORT)
+        return jsonify(_setup_payload(result))
+    except Exception as exc:
+        logger.exception("Failed to stop Python server")
         return jsonify({"error": str(exc)}), 500
 
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OrgShift - Validation Center</title><link rel="stylesheet" href="/static/style.css?v=19"></head>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OrgShift - Validation Center</title><link rel="stylesheet" href="/static/style.css?v=35"></head>
 <body class="pipeline-page validation-page" data-run-key="{{ initial_run_key|e }}" data-pipeline-id="{{ initial_pipeline_id|e }}" data-phase="{{ initial_phase|e }}" data-template-id="{{ initial_template_id|e }}">
 <header class="topbar pipeline-topbar"><div class="topbar-left"><a class="logo brand-logo" href="/" aria-label="OrgShift home"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a><span class="subtitle">Validation Center</span></div><div class="topbar-center"><div id="validation-banner" class="auth-status checking"><span class="dot"></span> Select validation phase</div></div><div class="topbar-right"><a href="/pipeline/runs" class="btn btn-secondary nav-btn">Pipeline Runs</a><a href="/flat-files" class="btn btn-secondary nav-btn">Flat Files</a><a href="/pipeline" class="btn btn-secondary nav-btn">Pipeline Designer</a></div></header>
 <div id="validation-result" class="validation-top-message" role="status" aria-live="assertive" hidden></div>
@@ -66,9 +66,10 @@
 <label class="validation-object-option"><input type="checkbox" value="text_limits"> <span>Text and byte limits</span></label>
 <label class="validation-object-option"><input type="checkbox" value="numeric_precision"> <span>Numeric precision and scale</span></label>
 <label class="validation-object-option"><input type="checkbox" value="salesforce_id_format"> <span>Salesforce ID format</span></label>
-<label id="validation-salesforce-id-length-label">Accepted Salesforce ID length<select id="validation-salesforce-id-length" class="fh-input" disabled><option value="15_or_18">15 or 18 characters (recommended)</option><option value="18">18 characters only</option><option value="15">15 characters only</option></select><small id="validation-salesforce-id-length-hint">Select “Salesforce ID format” to enable this choice.</small></label>
 <label class="validation-object-option"><input type="checkbox" value="contact_formats"> <span>Email, phone and URL formats</span></label>
-</div><small>Unselected checks are recorded as “Skipped by user”, not passed.</small>
+</div>
+<label id="validation-salesforce-id-length-label" class="validation-id-length">Accepted Salesforce ID length<select id="validation-salesforce-id-length" class="fh-input" disabled><option value="15_or_18">15 or 18 characters (recommended)</option><option value="18">18 characters only</option><option value="15">15 characters only</option></select><small id="validation-salesforce-id-length-hint">Select “Salesforce ID format” to enable this choice.</small></label>
+<small>Unselected checks are recorded as “Skipped by user”, not passed.</small>
 </fieldset>
 <label class="ff-policy-checkbox pre-option"><input id="validation-bypass-confirm" type="checkbox"><span>Allow validation bypass<small>Not recommended. Original files will be staged without schema, value, lookup, or target-reference validation. The bypass is recorded in run history.</small></span></label>
 <label class="ff-policy-checkbox post-option"><input id="validation-print-soql" type="checkbox"><span>Print generated SOQL<small>Include target queries in the validation log.</small></span></label>

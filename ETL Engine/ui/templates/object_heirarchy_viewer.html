@@ -75,16 +75,22 @@
     }
 
     button {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
+      background: transparent;
+      color: #1a3142;
+      border: 1px solid rgba(26, 49, 66, 0.35);
       cursor: pointer;
     }
 
+    button:hover {
+      background: rgba(255, 252, 248, 0.72);
+      color: #1a3142;
+      border-color: #1a3142;
+    }
+
     button.secondary {
-      background: #fff;
-      color: var(--accent);
-      border-color: var(--accent);
+      background: transparent;
+      color: #1a3142;
+      border-color: rgba(26, 49, 66, 0.35);
     }
 
     .status { margin-top: 10px; font-size: 13px; color: var(--muted); }

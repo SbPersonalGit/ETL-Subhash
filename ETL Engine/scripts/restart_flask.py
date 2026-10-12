@@ -25,6 +25,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--delay", type=float, default=2.0)
     parser.add_argument("--port", type=int, default=ETL_PORT)
+    parser.add_argument("--stop-only", action="store_true")
     args = parser.parse_args()
     ensure_workspace_folders()
     log_path = ENGINE_DATA_DIR / "logs" / "flask_server.log"
@@ -35,8 +36,15 @@ def main() -> int:
             handle.write(message + "\n")
 
     time.sleep(max(0.0, args.delay))
-    log(f"restart: stopping port {args.port}")
+    log(f"{'stop' if args.stop_only else 'restart'}: stopping port {args.port}")
     stop_python_server(args.port)
+    if args.stop_only:
+        deadline = time.time() + 20
+        while server_is_running(args.port) and time.time() < deadline:
+            time.sleep(0.4)
+        running = server_is_running(args.port)
+        log(f"stop: running={running}")
+        return 0 if not running else 1
     deadline = time.time() + 20
     while server_is_running(args.port) and time.time() < deadline:
         time.sleep(0.4)

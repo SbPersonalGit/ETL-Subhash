@@ -4,24 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OrgShift - Setup</title>
-  <link rel="stylesheet" href="/static/style.css?v=10" />
-  <style>
-    body.home-page { height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; display: block; }
-    .home-shell { max-width: 760px; margin: 0 auto; padding: 48px 24px; }
-    .setup-card { background: var(--panel, #0f172a); border: 1px solid var(--border, #243041); border-radius: 16px; padding: 24px; display: grid; gap: 16px; }
-    .setup-card h1 { margin: 0; font-size: 1.4rem; }
-    .setup-card p { margin: 0; color: var(--text-dim, #94a3b8); line-height: 1.5; }
-    .setup-field { display: grid; gap: 6px; }
-    .setup-field label { font-size: 0.9rem; }
-    .setup-field input { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border, #243041); background: #0b1220; color: inherit; }
-    .setup-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-    .setup-status { min-height: 1.4em; color: var(--text-dim, #94a3b8); }
-    .setup-status.ok { color: #86efac; }
-    .setup-status.err { color: #fca5a5; }
-    .setup-paths { font-size: 0.85rem; color: var(--text-dim, #94a3b8); display: grid; gap: 4px; }
-  </style>
+  <link rel="stylesheet" href="/static/style.css?v=38" />
 </head>
-<body class="home-page">
+<body class="product-page">
 <header class="topbar">
   <div class="topbar-left">
     <a class="logo brand-logo" href="/" aria-label="OrgShift setup"><img src="/static/assets/orgshift-logo.png" alt=""><span>OrgShift</span></a>
@@ -36,14 +21,17 @@
   </div>
 </header>
 
-<main class="home-shell">
-  <section class="setup-card">
-    <h1>Target Salesforce connection</h1>
-    <p>TARGET_SF_LOGIN_URL and TARGET_SF_SESSION_ID are set in <strong>Open Setup.bat</strong> and saved before the server starts. Put source CSVs under <strong>Input Files / Object API Name</strong> before you migrate.</p>
+<main class="product-shell">
+  <section class="product-hero">
+    <p class="product-kicker">Setup</p>
+    <h1>Target connection</h1>
+    <p>The login URL and session ID are saved from Open Setup.bat before the server starts. Place source CSVs in Input Files, using one folder per object API name.</p>
+  </section>
+  <section class="product-card setup-card tone-blue">
     <div id="setup-target" class="setup-paths"></div>
     <div class="setup-actions">
-      <button id="setup-start" class="btn btn-primary" type="button">Start Python Server</button>
       <button id="setup-restart" class="btn btn-secondary" type="button">Restart Python Server</button>
+      <button id="setup-stop" class="btn btn-danger" type="button">Stop Python Server</button>
       <a class="btn btn-secondary" href="/workspace">Open Workspace</a>
     </div>
     <div id="setup-status" class="setup-status">Loading current setup…</div>
@@ -61,8 +49,8 @@ async function loadSetup() {
     }
     const targetBox = document.getElementById('setup-target');
     targetBox.innerHTML = [
-      `TARGET_SF_LOGIN_URL: ${data.TARGET_SF_LOGIN_URL || 'Not set'}`,
-      `TARGET_SF_SESSION_ID: ${data.TARGET_SF_SESSION_ID_MASKED || 'Not set'}`,
+      `Login URL: ${data.TARGET_SF_LOGIN_URL || 'Not set'}`,
+      `Session: ${data.TARGET_SF_SESSION_ID_MASKED || 'Not set'}`,
     ].map(line => `<div>${line}</div>`).join('');
     const banner = document.getElementById('setup-banner');
     banner.className = data.running ? 'auth-status ok' : 'auth-status';
@@ -101,13 +89,27 @@ async function postSetup(url) {
   return data;
 }
 
-document.getElementById('setup-start').addEventListener('click', async () => {
+document.getElementById('setup-stop').addEventListener('click', async () => {
   const status = document.getElementById('setup-status');
   try {
-    const data = await postSetup('/api/setup/start');
-    status.className = 'setup-status ok';
-    status.textContent = data.message || 'Python server started.';
-    await loadSetup();
+    const data = await postSetup('/api/setup/stop');
+    status.className = 'setup-status';
+    status.textContent = data.message || 'Python server is stopping…';
+    for (let attempt = 0; attempt < 15; attempt += 1) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        await fetch('/api/setup', { cache: 'no-store' });
+      } catch (error) {
+        status.className = 'setup-status ok';
+        status.textContent = 'Python server is stopped.';
+        const banner = document.getElementById('setup-banner');
+        banner.className = 'auth-status';
+        banner.innerHTML = '<span class="dot"></span> Python server is stopped';
+        return;
+      }
+    }
+    status.className = 'setup-status err';
+    status.textContent = 'Stop was requested, but the server is still running.';
   } catch (error) {
     status.className = 'setup-status err';
     status.textContent = error.message;

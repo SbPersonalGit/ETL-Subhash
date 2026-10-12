@@ -277,6 +277,32 @@ def save_target_setup(login_url: str, session_id: str) -> dict[str, str]:
     return read_target_setup()
 
 
+def save_open_setup(
+    target_login_url: str,
+    target_session_id: str,
+    source_login_url: str = "",
+    source_session_id: str = "",
+) -> dict[str, str]:
+    """Save the target connection, and replace a placeholder source URL."""
+    result = save_target_setup(target_login_url, target_session_id)
+    source_url = (source_login_url or "").strip()
+    source_session = (source_session_id or "").strip()
+    lowered = source_url.lower()
+    if "your-source-org" in lowered or "your-target-org" in lowered:
+        source_url = ""
+        source_session = ""
+    if source_url and not source_url.lower().startswith("https://"):
+        raise ValueError("SOURCE_SF_LOGIN_URL must start with https://")
+    upsert_env_values(env_path(), {
+        "SOURCE_SF_LOGIN_URL": source_url,
+        "SOURCE_SF_SESSION_ID": source_session,
+    })
+    from dotenv import load_dotenv
+
+    load_dotenv(env_path(), override=True)
+    return result
+
+
 def listening_pids(port: int = ETL_PORT) -> list[int]:
     try:
         output = subprocess.check_output(["netstat", "-ano"], text=True, errors="replace")
@@ -414,11 +440,11 @@ def stop_python_server(port: int = ETL_PORT) -> dict:
     return {"running": False, "killed": killed, "port": port}
 
 
-def schedule_python_server_restart(port: int = ETL_PORT) -> dict:
-    """Start a helper outside this process tree so stopping the server does not kill it."""
+def _launch_server_helper(extra_args: list[str]) -> None:
+    """Start restart_flask.py outside this process tree so taskkill cannot stop it early."""
     helper = ENGINE_ROOT / "scripts" / "restart_flask.py"
     python = _engine_python()
-    command = subprocess.list2cmdline([str(python), str(helper), "--delay", "1", "--port", str(port)])
+    command = subprocess.list2cmdline([str(python), str(helper), *extra_args])
     cwd = str(ENGINE_ROOT)
     # Win32_Process.Create parents the helper to WMI, not to Flask.
     # taskkill /T of the listening process then cannot kill the helper,
@@ -439,10 +465,26 @@ def schedule_python_server_restart(port: int = ETL_PORT) -> dict:
         close_fds=True,
         creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
     )
+
+
+def schedule_python_server_restart(port: int = ETL_PORT) -> dict:
+    """Start a helper outside this process tree so stopping the server does not kill it."""
+    _launch_server_helper(["--delay", "1", "--port", str(port)])
     return {
         "restarting": True,
         "port": port,
         "message": f"Python server will restart on port {port}.",
+    }
+
+
+def schedule_python_server_stop(port: int = ETL_PORT) -> dict:
+    """Stop the server after this request can finish."""
+    _launch_server_helper(["--delay", "1", "--port", str(port), "--stop-only"])
+    return {
+        "running": False,
+        "stopping": True,
+        "port": port,
+        "message": f"Python server will stop on port {port}.",
     }
 
 

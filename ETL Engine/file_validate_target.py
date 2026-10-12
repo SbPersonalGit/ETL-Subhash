@@ -12,7 +12,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from cli import build_connectors
+from core.connector import connector_from_env
 from core.field_rules import build_field_profile
 from core.flat_file import open_csv
 from core.file_validation_query import (
@@ -284,7 +284,7 @@ def _run_validation(
         detail=f"Connecting to target org for {object_name}",
         log=f"[{object_name}] Connecting to target org...",
     )
-    _, target = build_connectors()
+    target = connector_from_env("TARGET")
     target.connect()
     progress.update(
         "connect",
